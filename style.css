@@ -6,20 +6,20 @@
 }
 
 :root {
-    --primary-color: #053e87;
-    --secondary-color: #c3cfe2;
-    --accent-color: #f6f7f8;
-    --text-color: #2d3748;
-    --border-color: #e2e8f0;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    
+    --primary-color: #6a82fb; /* Azul suave */
+    --secondary-color: #c7d2fe; /* Azul claro */
+    --accent-color: #e0e7ff; /* Azul muito claro */
+    --text-color: #334155; /* Cinza escuro */
+    --border-color: #cbd5e1; /* Cinza claro */
+    --shadow-color: rgba(0, 0, 0, 0.08); /* Sombra mais suave */
+
     /* Variáveis para o modo escuro */
-    --dark-primary: #1a202c;
-    --dark-secondary: #2d3748;
-    --dark-accent: #e6eaed;
-    --dark-text: #e2e8f0;
-    --dark-border: #4a5568;
-    --dark-shadow: rgba(0, 0, 0, 0.3);
+    --dark-primary: #1e293b; /* Azul escuro */
+    --dark-secondary: #334155; /* Azul acinzentado */
+    --dark-accent: #475569; /* Azul acinzentado mais claro */
+    --dark-text: #e2e8f0; /* Cinza claro */
+    --dark-border: #4a5568; /* Cinza azulado */
+    --dark-shadow: rgba(0, 0, 0, 0.25); /* Sombra mais pronunciada para contraste */
 }
 
 html, body {
@@ -33,7 +33,7 @@ html, body {
 
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #9ca2a8, #2d3748);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
     transition: background 0.3s ease;
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
@@ -59,7 +59,7 @@ body.dark {
 }
 
 body.dark .container {
-    background: linear-gradient(135deg, #a4aab1, #646d7c, #2563eb);
+    background: linear-gradient(135deg, #2d3748, #1a202c);
     background-size: 400% 400%;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25),
                 inset 0 0 80px rgba(0, 0, 0, 0.1),
@@ -72,7 +72,7 @@ body.dark .container {
 .container {
     max-width: 1400px;
     margin: 20px auto;
-    background: linear-gradient(135deg, #e5e9ee, #4f6580, #0f387b);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
     background-size: 400% 400%;
     padding: 20px;
     border-radius: 16px;
@@ -96,28 +96,28 @@ body.dark .container {
 .group {
     border-radius: 14px;
     background: linear-gradient(145deg, #ffffff, #f8fafc);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(241, 245, 249, 0.8);
+    box-shadow: 0 4px 8px var(--shadow-color);
+    border: 1px solid var(--border-color);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .group:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
 }
 
 body.dark .group {
-    background: linear-gradient(145deg, #1e293b, #111827);
-    border-color: rgba(51, 65, 85, 0.8);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(145deg, var(--dark-secondary), var(--dark-primary));
+    border-color: var(--dark-border);
+    box-shadow: 0 4px 8px var(--dark-shadow);
 }
 
 .accordion-header {
     background: linear-gradient(135deg, #ffffff, #f1f5f9);
-    border-bottom: 1px solid rgba(241, 245, 249, 0.6);
+    border-bottom: 1px solid var(--border-color);
     transition: all 0.3s ease;
-    color: #1e3a8a;
+    color: var(--primary-color);
 }
 
 .accordion-header:hover {
@@ -125,9 +125,9 @@ body.dark .group {
 }
 
 body.dark .accordion-header {
-    background: linear-gradient(135deg, #1e293b, #0f172a);
-    border-bottom: 1px solid rgba(51, 65, 85, 0.6);
-    color: #e2e8f0;
+    background: linear-gradient(135deg, var(--dark-secondary), var(--dark-primary));
+    border-bottom: 1px solid var(--dark-border);
+    color: var(--dark-text);
 }
 
 body.dark .accordion-header .header-content i {
@@ -135,24 +135,24 @@ body.dark .accordion-header .header-content i {
 }
 
 body.dark .button-container button {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-    border: 1px solid rgba(51, 65, 85, 0.8);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    color: #e2e8f0;
+    background: linear-gradient(145deg, var(--dark-secondary), var(--dark-primary));
+    border: 1px solid var(--dark-border);
+    box-shadow: 0 4px 6px var(--dark-shadow);
+    color: var(--dark-text);
 }
 
 body.dark .button-container button i {
-    color: #2f3134;
+    color: var(--dark-accent);
 }
 
 body.dark .button-container button:hover {
-    background: linear-gradient(145deg, #0f172a, #0f172a);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    color: #93c5fd;
+    background: linear-gradient(145deg, var(--dark-primary), var(--dark-secondary));
+    box-shadow: 0 6px 12px var(--dark-shadow);
+    color: var(--dark-accent);
 }
 
 body.dark .button-container button:hover i {
-    color: #93c5fd;
+    color: var(--dark-text);
 }
 
 /* Garantir que os links dentro dos acordeões sejam clicáveis */
@@ -1002,27 +1002,27 @@ body.dark .accordion-content::-webkit-scrollbar-thumb:hover {
 
 /* Estilos específicos para cada grupo */
 .group.google-apps {
-    background: linear-gradient(135deg, #f4f4f5, #34a853);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
 }
 
 .group.pje {
-    background: linear-gradient(135deg, #ef4444, #dc2626);
+    background: linear-gradient(135deg, #ffe0e0, #ffc7c7);
 }
 
 .group.sistema-pje {
-    background: linear-gradient(135deg, #319795, #2C7A7B);
+    background: linear-gradient(135deg, #e0ffe0, #c7ffc7);
 }
 
 .group.sistemas-satelites {
-    background: linear-gradient(135deg, #00838F, #006064);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
 }
 
 .group.assyst-pje {
-    background: linear-gradient(135deg, #4CAF50, #388E3C);
+    background: linear-gradient(135deg, #e0ffe0, #c7ffc7);
 }
 
 .group.apps-externos {
-    background: linear-gradient(135deg, #64748B, #475569);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
 }
 
 /* Estilo para o botão Consulta de Informações Funcionais */
@@ -1489,19 +1489,19 @@ body.dark .notes-section {
 
 /* Estilos para Aniversariantes */
 .group.aniversariantes {
-    background: linear-gradient(135deg, #fff5f5, #fff);
-    border: 1px solid #ffd7d7;
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
+    background: linear-gradient(135deg, #fffafa, #ffebeb);
+    border: 1px solid #ffe0e0;
+    box-shadow: 0 5px 15px rgba(255, 170, 170, 0.2);
     transition: all 0.3s ease;
 }
 
 .group.aniversariantes:hover {
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(255, 107, 107, 0.3);
+    box-shadow: 0 8px 20px rgba(255, 170, 170, 0.3);
 }
 
 .group.aniversariantes .accordion-header {
-    background: linear-gradient(135deg, #ff6b6b, #ff8787);
+    background: linear-gradient(135deg, #ff9999, #ffb3b3);
     color: white;
     font-weight: 500;
     border-bottom: none;
@@ -1510,190 +1510,19 @@ body.dark .notes-section {
     z-index: 1;
 }
 
-.group.aniversariantes .accordion-header::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 70%);
-    transform: rotate(45deg);
-    z-index: -1;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-}
-
-.group.aniversariantes .accordion-header:hover::before {
-    opacity: 1;
-    animation: shine 1.5s infinite;
-}
-
 .group.aniversariantes .accordion-header:hover {
-    background: linear-gradient(135deg, #ff5252, #ff6b6b);
+    background: linear-gradient(135deg, #ff8080, #ff9999);
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(255, 82, 82, 0.3);
-}
-
-.group.aniversariantes .accordion-icon {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-.group.aniversariantes .aniversariante-item {
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 12px;
-    background: #fff;
-    border: 1px solid #ffe3e3;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 3px 10px rgba(255, 107, 107, 0.1);
-    position: relative;
-    overflow: hidden;
-    animation: fadeInRight 0.5s ease-out forwards;
-    opacity: 0;
-    transform: translateX(20px);
-}
-
-.group.aniversariantes .aniversariante-item:nth-child(1) { animation-delay: 0.1s; }
-.group.aniversariantes .aniversariante-item:nth-child(2) { animation-delay: 0.2s; }
-.group.aniversariantes .aniversariante-item:nth-child(3) { animation-delay: 0.3s; }
-.group.aniversariantes .aniversariante-item:nth-child(4) { animation-delay: 0.4s; }
-.group.aniversariantes .aniversariante-item:nth-child(5) { animation-delay: 0.5s; }
-
-.group.aniversariantes .aniversariante-item::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 60%);
-    z-index: 1;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.group.aniversariantes .aniversariante-item:hover::after {
-    opacity: 1;
-}
-
-.group.aniversariantes .aniversariante-item:hover {
-    transform: translateX(8px);
-    background: #fff8f8;
-    box-shadow: 0 5px 15px rgba(255, 107, 107, 0.2);
-    border-color: #ffb3b3;
-}
-
-.group.aniversariantes .aniversariante-item.hoje {
-    border: 2px solid #ffc107;
-    background: #fffbeb;
-    position: relative;
-    overflow: hidden;
-    animation: pulse 2s infinite;
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.3);
-}
-
-.group.aniversariantes .aniversariante-item.hoje::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, rgba(255, 193, 7, 0.1) 25%, transparent 25%, transparent 50%, rgba(255, 193, 7, 0.1) 50%, rgba(255, 193, 7, 0.1) 75%, transparent 75%);
-    background-size: 20px 20px;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    animation: shine 3s linear infinite;
-    opacity: 0.5;
-}
-
-.group.aniversariantes .aniversariante-item.hoje .aniversariante-nome {
-    color: #b45309;
-    font-weight: 700;
-}
-
-.group.aniversariantes .aniversariante-item.hoje .aniversariante-icon i {
-    color: #ffc107;
-    animation: bounce 1s infinite;
-}
-
-.group.aniversariantes .aniversariante-nome {
-    color: #e03131;
-    font-weight: 600;
-    font-size: 1.1em;
-    margin-bottom: 4px;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.05);
-    position: relative;
-    display: inline-block;
-}
-
-.group.aniversariantes .aniversariante-nome::after {
-    content: '';
-    position: absolute;
-    bottom: -2px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(90deg, #ff6b6b, transparent);
-    transition: width 0.3s ease;
-}
-
-.group.aniversariantes .aniversariante-item:hover .aniversariante-nome::after {
-    width: 100%;
-}
-
-.group.aniversariantes .aniversariante-data {
-    color: #868e96;
-    font-size: 0.9em;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.group.aniversariantes .aniversariante-data i {
-    color: #ff8787;
-    animation: pulse 2s infinite;
+    box-shadow: 0 5px 15px rgba(255, 128, 128, 0.3);
 }
 
 .group.aniversariantes .accordion-content {
-    background: #fff5f5;
-}
-
-.group.aniversariantes .sem-aniversariantes {
-    color: #868e96;
-    text-align: center;
-    padding: 20px;
-    font-style: italic;
-    background: rgba(255, 235, 235, 0.5);
-    border-radius: 12px;
-    margin: 10px 0;
-    animation: fadeIn 0.5s ease-out forwards;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.group.aniversariantes .sem-aniversariantes i {
-    font-size: 2rem;
-    color: #ff8787;
-    margin-bottom: 10px;
-    animation: bounce 2s infinite;
-}
-
-body.dark .aniversariante-nome {
-    color: #e03131;
-}
-
-body.dark .aniversariante-data {
-    color: #868e96;
+    background: #fffafa;
 }
 
 body.dark .group.aniversariantes {
-    background: linear-gradient(135deg, rgba(30, 30, 40, 0.8), rgba(20, 20, 30, 0.9));
-    border: 1px solid #3b3f54;
+    background: linear-gradient(135deg, rgba(40, 30, 30, 0.8), rgba(30, 20, 20, 0.9));
+    border: 1px solid #543b3b;
     box-shadow: 0 5px 15px rgba(157, 23, 77, 0.2);
 }
 
@@ -1710,22 +1539,6 @@ body.dark .group.aniversariantes .accordion-header {
 body.dark .group.aniversariantes .accordion-header:hover {
     background: linear-gradient(135deg, #9d174d, #831843);
     box-shadow: 0 4px 12px rgba(157, 23, 77, 0.4);
-}
-
-body.dark .group.aniversariantes .accordion-icon {
-    color: rgba(255, 255, 255, 0.9);
-}
-
-body.dark .group.aniversariantes .aniversariante-item {
-    background: rgba(30, 30, 40, 0.8);
-    border: 1px solid #3b3f54;
-    box-shadow: 0 3px 10px rgba(157, 23, 77, 0.15);
-}
-
-body.dark .group.aniversariantes .aniversariante-item:hover {
-    background: rgba(40, 40, 50, 0.9);
-    border-color: #be185d;
-    box-shadow: 0 5px 15px rgba(157, 23, 77, 0.25);
 }
 
 body.dark .group.aniversariantes .accordion-content {
@@ -2936,16 +2749,21 @@ body.dark .app-title i {
 
 /* Footer estilo Apple */
 .footer {
-    width: 100%;
-    background: rgba(250, 250, 250, 0.9);
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 18px 0;
-    margin-top: 30px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     position: relative;
-    z-index: 10;
-    font-family: 'SF Pro Display', 'Helvetica Neue', 'Roboto', sans-serif;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    color: var(--text-color);
+    padding: 15px 20px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    transition: transform 0.3s ease-out;
+}
+
+body.dark .footer {
+    background: linear-gradient(135deg, var(--dark-primary), var(--dark-secondary));
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
 }
 
 body.dark .footer {

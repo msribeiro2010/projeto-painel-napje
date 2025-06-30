@@ -149,28 +149,30 @@ function handleAccordionClick(e) {
     }
     
     // Alternar conteúdo
-    if (content && content.classList.contains('accordion-content')) {
-        if (isExpanded) {
-            // Fechar
-            content.style.maxHeight = null;
-            setTimeout(() => {
-                content.classList.remove('active');
-            }, 10);
-        } else {
-            // Abrir
-            content.classList.add('active');
-            content.style.maxHeight = content.scrollHeight + 'px';
-            
-            // Rolar para mostrar o accordion se necessário
-            setTimeout(() => {
-                const headerRect = header.getBoundingClientRect();
-                if (headerRect.top < 0) {
-                    window.scrollTo({
-                        top: window.pageYOffset + headerRect.top - 20,
-                        behavior: 'smooth'
-                    });
+    // Alternar conteúdo
+            // Alternar conteúdo
+            if (content && content.classList.contains('accordion-content')) {
+                if (isExpanded) {
+                    // Fechar
+                    content.style.maxHeight = null;
+                    setTimeout(() => {
+                        content.classList.remove('active');
+                    }, 10);
+                } else {
+                    // Abrir
+                    content.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + 'px';
+                    
+                    // Rolar para mostrar o accordion se necessário
+                    setTimeout(() => {
+                        const headerRect = header.getBoundingClientRect();
+                        if (headerRect.top < 0) {
+                            window.scrollTo({
+                                top: window.pageYOffset + headerRect.top - 20,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 300);
                 }
-            }, 300);
-        }
-    }
+            }
 } 

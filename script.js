@@ -311,15 +311,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Fecha todos os acordeons ao carregar
-    document.querySelectorAll('.accordion-header').forEach(header => {
-        header.setAttribute('aria-expanded', 'false');
-        const content = header.nextElementSibling;
-        if (content && content.classList.contains('accordion-content')) {
-            content.classList.remove('active');
-            content.style.maxHeight = null;
-        }
-    });
+    
 });
 
 // Funções para o modal de feriados
