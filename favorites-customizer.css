@@ -278,3 +278,25 @@ body.dark .favorites-color-panel {
     }
 }
 
+.favorites-container.aurora-bg {
+    background: linear-gradient(120deg, #a5b4fc, #f0abfc, #fcd34d, #6ee7b7, #bae6fd, #fca5a5);
+    background-size: 400% 400%;
+    animation: auroraGradient 8s ease-in-out infinite;
+    border: 2px solid #a5b4fc;
+}
+@keyframes auroraGradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.favorites-container.pulsar-bg {
+    background: linear-gradient(135deg, #f472b6 0%, #fcd34d 100%);
+    animation: pulsarPulse 2.5s ease-in-out infinite alternate;
+    border: 2px solid #f472b6;
+}
+@keyframes pulsarPulse {
+    0% { filter: brightness(1) saturate(1); }
+    100% { filter: brightness(1.15) saturate(1.2); }
+}
+

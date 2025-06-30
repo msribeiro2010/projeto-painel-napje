@@ -349,6 +349,9 @@ async function loadHolidays() {
         `;
         
         const response = await fetch('feriados_2025.json');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const holidays = await response.json();
         
         // Atualiza o mês atual no título

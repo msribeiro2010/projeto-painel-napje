@@ -23,22 +23,20 @@
 }
 
 html, body {
-    min-height: 100vh;
-    width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #c3c9cc;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    box-sizing: border-box;
+    background: #f3f4f6 !important;
 }
 
 body {
+    display: flex;
+    flex-direction: column;
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
     transition: background 0.3s ease;
     background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
     color: var(--text-color);
-    width: 100%;
     overflow-x: hidden;
 }
 
@@ -51,9 +49,7 @@ body {
 /* Estilo para o modo escuro */
 html.dark,
 body.dark {
-    background: linear-gradient(135deg, #353636, #34363b, #0f172a);
-    background-size: 400% 400%;
-    animation: gradientBG 15s ease infinite;
+    background: #181c24 !important;
     color: #a9c4e8;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -82,6 +78,8 @@ body.dark .container {
     border: 1px solid rgba(255, 255, 255, 0.3);
     position: relative;
     overflow: hidden;
+    background: none !important;
+    box-shadow: none;
 }
 
 body.dark .container {
@@ -213,8 +211,10 @@ html.dark .button-container button:hover {
     padding: 0;
     margin: 0 auto;
     position: relative;
-    min-height: calc(100vh - 60px); /* Ajustado para considerar o footer */
+    flex-grow: 1; /* Allow it to grow and push footer down */
     align-items: flex-start;
+    background: none !important;
+    box-shadow: none;
 }
 
 /* Container centralizado */
@@ -223,11 +223,14 @@ html.dark .button-container button:hover {
     max-width: 1500px;
     padding: 0px;
     margin: 0 auto;
-    background-color: rgba(37, 132, 227, 0.8);
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
+    flex-grow: 1; /* Allow it to grow within center-wrapper */
+    background: none !important;
+    box-shadow: none;
 }
 
 /* Organização dos grupos em grade 4x4 */
@@ -3663,6 +3666,22 @@ body.dark .group:hover {
 body.dark .feedback-message {
     background: var(--accent-color-dark, #2563eb);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.group.pje .pje-producao-title {
+    background: linear-gradient(90deg, #ffb3b3 0%, #ff6666 100%);
+    color: #fff;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px rgba(255, 99, 132, 0.10);
+    margin-bottom: 8px;
+    display: inline-block;
+}
+body.dark .group.pje .pje-producao-title {
+    background: linear-gradient(90deg, #b91c1c 0%, #ef4444 100%);
+    color: #fff;
 }
 
 

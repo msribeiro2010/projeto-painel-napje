@@ -138,7 +138,7 @@
             </div>
 
             <!-- Container dos Grupos com efeito acordeão -->
-            <div id="groups-container" class="groups-container" aria-hidden="true">
+            <div id="groups-container" class="groups-container expanded" aria-hidden="false">
                 <div class="groups-row">
                     <!-- Planilha/Presencial/Remoto -->
                     <div class="group planilha-presencial" id="planilha-presencial">
@@ -374,7 +374,7 @@
                         <button class="accordion-header" aria-expanded="false" aria-controls="pje-producao-content">
                             <div class="header-content">
                                 <i class="bi bi-buildings"></i>
-                                PJe-Produção 2.15.2 - COPAÍBA
+                                PJe-Produção <span class="versao-pje-producao">2.15.2 - COPAÍBA</span>
                             </div>
                             <i class="                                        "></i>
                         </button>
@@ -570,26 +570,33 @@
             </div>
             
             <div class="greeting-message" id="greeting-message"></div><div class="footer-info">
-                <p><i class="bi bi-person-circle"></i> @msribeiro | 2025</p></div>
-                    </div></footer>    
-                    <!-- Scripts -->    
-                     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>    
-                     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>    
-                     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>    
-                     <script src="script.js"></script>    <script src="button-customization.js"></script>    
-                     <script src="recuperar-apps-fixos.js"></script>    <script src="header-clock.js"></script>    
-                     <script src="add-default-favoritos.js"></script>    <script src="card-customizer.js"></script>    
-                     <script src="favorites-customizer.js"></script>    <script src="footer-calendar.js"></script>    
-                     <!-- Scripts de animação de aniversário removidos -->    <!-- Modal de Feriados -->    
-                      <div id="holiday-modal" class="modal">        
-                        <div class="modal-content">            
-                            <div class="modal-header">                
-                                <h3><i class="bi bi-calendar2-heart"></i> Feriados 2025</h3>                
-                                <button class="close-btn" onclick="closeHolidayModal()" title="Fechar modal"> 
-                                                       <i class="bi bi-x-lg"></i>                
-                                                    </button>            
-                                                </div>            
-                                                <div class="modal-body">                
-                                                    <div class="next-holiday">                   
-                                                         <h4>Próximo Feriado:</h4>                    <
-                                                         div id="next-holiday"></div>                </div>                <div class="holiday-filters">                    <button class="month-btn" onclick="prevMonth()" title="Mês anterior">                        <i class="bi bi-chevron-left"></i>                    </button>                    <h4 id="current-month">Fevereiro 2025</h4>                    <button class="month-btn" onclick="nextMonth()" title="Próximo mês">                        <i class="bi bi-chevron-right"></i>                    </button>                </div>                <div id="holidays-list"></div>            </div>        </div>    </div></body></html>
+                <p>
+                    <img src="logo.svg" alt="Logo" style="height: 1.2em; vertical-align: middle; margin-right: 6px;">
+                    <a href="https://msribeiro2010.github.io/marcelo-s-ribeiro-stellar-ai/" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">
+                        @msribeiro
+                    </a> | 2025
+                </p>
+            </div>
+        </div>
+    </footer>    
+    <!-- Scripts -->    
+     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>    
+     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>    
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>    
+     <script src="script.js"></script>    <script src="button-customization.js"></script>    
+     <script src="recuperar-apps-fixos.js"></script>    <script src="header-clock.js"></script>    
+     <script src="add-default-favoritos.js"></script>    <script src="card-customizer.js"></script>    
+     <script src="favorites-customizer.js"></script>    <script src="footer-calendar.js"></script>    
+    <!-- Scripts de animação de aniversário removidos -->    <!-- Modal de Feriados -->    
+     <div id="holiday-modal" class="modal">        
+       <div class="modal-content">            
+           <div class="modal-header">                
+               <h3><i class="bi bi-calendar2-heart"></i> Feriados 2025</h3>                
+               <button class="close-btn" onclick="closeHolidayModal()" title="Fechar modal"> 
+                               <i class="bi bi-x-lg"></i>                
+                            </button>            
+                           </div>            
+                           <div class="modal-body">                
+                               <div class="next-holiday">                   
+                                    <h4>Próximo Feriado:</h4>
+                                    <div id="next-holiday"></div>                </div>                <div class="holiday-filters">                    <button class="month-btn" onclick="prevMonth()" title="Mês anterior">                        <i class="bi bi-chevron-left"></i>                    </button>                    <h4 id="current-month">Fevereiro 2025</h4>                    <button class="month-btn" onclick="nextMonth()" title="Próximo mês">                        <i class="bi bi-chevron-right"></i>                    </button>                </div>                <div id="holidays-list"></div>            </div>        </div>    </div></body></html>

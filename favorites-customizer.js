@@ -174,6 +174,18 @@ const favoritesColors = [
         name: 'Matrix',
         animated: true,
         matrix: true
+    },
+    {
+        background: 'aurora',
+        border: '#a5b4fc',
+        name: 'Aurora',
+        animated: true
+    },
+    {
+        background: 'pulsar',
+        border: '#f472b6',
+        name: 'Pulsar',
+        animated: true
     }
 ];
 
@@ -375,8 +387,20 @@ function initFavoritesCustomizer() {
 
                 if (color.name === 'Matrix') {
                     showMatrixEffect();
+                    hideAuroraEffect();
+                    hidePulsarEffect();
+                } else if (color.name === 'Aurora') {
+                    hideMatrixEffect();
+                    showAuroraEffect();
+                    hidePulsarEffect();
+                } else if (color.name === 'Pulsar') {
+                    hideMatrixEffect();
+                    hideAuroraEffect();
+                    showPulsarEffect();
                 } else {
                     hideMatrixEffect();
+                    hideAuroraEffect();
+                    hidePulsarEffect();
                 }
             });
             
@@ -448,8 +472,20 @@ function initFavoritesCustomizer() {
 
                 if (color.name === 'Matrix') {
                     showMatrixEffect();
+                    hideAuroraEffect();
+                    hidePulsarEffect();
+                } else if (color.name === 'Aurora') {
+                    hideMatrixEffect();
+                    showAuroraEffect();
+                    hidePulsarEffect();
+                } else if (color.name === 'Pulsar') {
+                    hideMatrixEffect();
+                    hideAuroraEffect();
+                    showPulsarEffect();
                 } else {
                     hideMatrixEffect();
+                    hideAuroraEffect();
+                    hidePulsarEffect();
                 }
             });
             colorOptionsContainer.appendChild(colorWrapper);
@@ -532,8 +568,20 @@ function initFavoritesCustomizer() {
 
         if (colorObj && colorObj.name === 'Matrix') {
             showMatrixEffect();
+            hideAuroraEffect();
+            hidePulsarEffect();
+        } else if (colorObj && colorObj.name === 'Aurora') {
+            hideMatrixEffect();
+            showAuroraEffect();
+            hidePulsarEffect();
+        } else if (colorObj && colorObj.name === 'Pulsar') {
+            hideMatrixEffect();
+            hideAuroraEffect();
+            showPulsarEffect();
         } else {
             hideMatrixEffect();
+            hideAuroraEffect();
+            hidePulsarEffect();
         }
     }
 }
@@ -798,7 +846,7 @@ function showMatrixEffect() {
         matrixCanvas.style.height = '100%';
         matrixCanvas.style.zIndex = '0';
         matrixCanvas.style.pointerEvents = 'none';
-        matrixCanvas.style.opacity = '0.22';
+        matrixCanvas.style.opacity = '0.38';
         matrixCanvas.style.userSelect = 'none';
         document.querySelector('.favorites-container').appendChild(matrixCanvas);
     }
@@ -814,15 +862,18 @@ function showMatrixEffect() {
     const drops = Array(columns).fill(1);
     function drawMatrix() {
         ctx.globalAlpha = 1;
-        ctx.fillStyle = 'rgba(17,17,17,0.18)';
+        ctx.fillStyle = 'rgba(240,255,240,0.13)';
         ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
         ctx.font = fontSize + 'px monospace';
         for (let i = 0; i < drops.length; i++) {
             const text = letters[Math.floor(Math.random() * letters.length)];
             ctx.globalAlpha = 1;
-            ctx.fillStyle = '#00ff41';
-            ctx.shadowColor = '#00ff41';
-            ctx.shadowBlur = 8;
+            ctx.fillStyle = '#f4fff4';
+            ctx.shadowColor = '#baff7c';
+            ctx.shadowBlur = 24;
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 1.5;
+            ctx.strokeText(text, i * fontSize, drops[i] * fontSize);
             ctx.fillText(text, i * fontSize, drops[i] * fontSize);
             ctx.shadowBlur = 0;
             if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
@@ -836,12 +887,48 @@ function showMatrixEffect() {
     window.favoritesMatrixInterval = setInterval(drawMatrix, 60);
     // Redimensionar ao mudar tamanho do container
     window.addEventListener('resize', hideMatrixEffect);
+
+    // Deixar os botões dos atalhos em verde Matrix
+    const favButtons = document.querySelectorAll('.favorites-container .favorite-item button, .favorites-container button');
+    favButtons.forEach(btn => {
+        btn.style.background = 'linear-gradient(90deg, #22c55e 0%, #4ade80 100%)';
+        btn.style.color = '#fff';
+        btn.style.border = '1.5px solid #22c55e';
+        btn.style.boxShadow = '0 2px 8px rgba(34,197,94,0.10)';
+        btn.style.textShadow = '0 0 8px #baff7c, 0 0 2px #fff';
+    });
 }
 function hideMatrixEffect() {
     const matrixCanvas = document.getElementById('favorites-matrix-canvas');
     if (matrixCanvas) matrixCanvas.remove();
     if (window.favoritesMatrixInterval) clearInterval(window.favoritesMatrixInterval);
     window.removeEventListener('resize', hideMatrixEffect);
+    // Restaurar botões
+    const favButtons = document.querySelectorAll('.favorites-container .favorite-item button, .favorites-container button');
+    favButtons.forEach(btn => {
+        btn.style.background = '';
+        btn.style.color = '';
+        btn.style.border = '';
+        btn.style.boxShadow = '';
+    });
+}
+
+// Efeitos Aurora e Pulsar
+function showAuroraEffect() {
+    const container = document.querySelector('.favorites-container');
+    container.classList.add('aurora-bg');
+}
+function hideAuroraEffect() {
+    const container = document.querySelector('.favorites-container');
+    container.classList.remove('aurora-bg');
+}
+function showPulsarEffect() {
+    const container = document.querySelector('.favorites-container');
+    container.classList.add('pulsar-bg');
+}
+function hidePulsarEffect() {
+    const container = document.querySelector('.favorites-container');
+    container.classList.remove('pulsar-bg');
 }
 
 // Inicializar quando o DOM estiver pronto
