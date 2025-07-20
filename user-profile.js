@@ -13,7 +13,7 @@ class UserProfileManager {
         this.adminBtn = document.getElementById('admin-btn');
         this.settingsBtn = document.getElementById('settings-btn');
         this.logoutBtn = document.getElementById('logout-btn');
-        
+
         this.currentUser = null;
         this.init();
     }
@@ -21,10 +21,10 @@ class UserProfileManager {
     init() {
         // Verificar se o usuário está logado ao carregar a página
         this.checkAuthState();
-        
+
         // Configurar event listeners
         this.setupEventListeners();
-        
+
         // Monitorar mudanças no estado de autenticação do Supabase
         this.waitForSupabaseAndSetupAuth();
     }
@@ -61,7 +61,7 @@ class UserProfileManager {
 
         // Botão de logout
         if (this.logoutBtn) {
-            this.logoutBtn.addEventListener('click', async () => {
+            this.logoutBtn.addEventListener('click', async() => {
                 await this.logout();
             });
         }
@@ -74,8 +74,11 @@ class UserProfileManager {
                 return;
             }
 
-            const { data: { session }, error } = await window.supabaseClient.auth.getSession();
-            
+            const {
+                data: { session },
+                error
+            } = await window.supabaseClient.auth.getSession();
+
             if (error) {
                 console.error('Erro ao verificar sessão:', error);
                 this.showAuthButtons();
@@ -96,14 +99,13 @@ class UserProfileManager {
     async handleUserLogin(user) {
         try {
             this.currentUser = user;
-            
+
             // Buscar informações do perfil do usuário
             const userProfile = await this.getUserProfile(user.id);
-            
+
             // Atualizar interface
             this.updateUserInterface(user, userProfile);
             this.showUserProfile();
-            
         } catch (error) {
             console.error('Erro ao processar login do usuário:', error);
             this.showAuthButtons();
@@ -140,9 +142,13 @@ class UserProfileManager {
         console.log('👤 User:', user);
         console.log('📋 Profile:', profile);
         console.log('🔑 Role:', profile?.role);
-        
+
         // Atualizar nome do usuário
-        const displayName = profile?.name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário';
+        const displayName =
+            profile?.name ||
+            user.user_metadata?.full_name ||
+            user.email?.split('@')[0] ||
+            'Usuário';
         if (this.userName) {
             this.userName.textContent = displayName;
         }
@@ -180,23 +186,25 @@ class UserProfileManager {
     }
 
     getInitials(name) {
-        if (!name) return 'U';
-        
+        if (!name) {
+            return 'U';
+        }
+
         const words = name.trim().split(' ');
         if (words.length === 1) {
             return words[0].charAt(0).toUpperCase();
         }
-        
+
         return (words[0].charAt(0) + words[words.length - 1].charAt(0)).toUpperCase();
     }
 
     formatRole(role) {
         const roleMap = {
-            'admin': 'Administrador',
-            'user': 'Usuário',
-            'moderator': 'Moderador'
+            admin: 'Administrador',
+            user: 'Usuário',
+            moderator: 'Moderador'
         };
-        
+
         return roleMap[role] || role.charAt(0).toUpperCase() + role.slice(1);
     }
 
@@ -221,12 +229,20 @@ class UserProfileManager {
     handleUserLogout() {
         this.currentUser = null;
         this.showAuthButtons();
-        
+
         // Limpar dados do perfil
-        if (this.userName) this.userName.textContent = 'Nome do Usuário';
-        if (this.userRole) this.userRole.textContent = 'Usuário';
-        if (this.userAvatar) this.userAvatar.innerHTML = '<i class="bi bi-person-fill"></i>';
-        if (this.adminBtn) this.adminBtn.style.display = 'none';
+        if (this.userName) {
+            this.userName.textContent = 'Nome do Usuário';
+        }
+        if (this.userRole) {
+            this.userRole.textContent = 'Usuário';
+        }
+        if (this.userAvatar) {
+            this.userAvatar.innerHTML = '<i class="bi bi-person-fill"></i>';
+        }
+        if (this.adminBtn) {
+            this.adminBtn.style.display = 'none';
+        }
     }
 
     async logout() {
@@ -236,7 +252,7 @@ class UserProfileManager {
             }
 
             const { error } = await window.supabaseClient.auth.signOut();
-            
+
             if (error) {
                 console.error('Erro ao fazer logout:', error);
                 this.showFeedback('Erro ao sair. Tente novamente.', 'error');
@@ -244,12 +260,11 @@ class UserProfileManager {
             }
 
             this.showFeedback('Logout realizado com sucesso!', 'success');
-            
+
             // Redirecionar para página inicial após um breve delay
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
-            
         } catch (error) {
             console.error('Erro durante logout:', error);
             this.showFeedback('Erro ao sair. Tente novamente.', 'error');

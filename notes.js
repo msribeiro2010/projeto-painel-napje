@@ -1,5 +1,5 @@
 // Gestor de Notas
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     // Definir cores disponíveis
     const noteColors = [
         { name: 'default', color: '#f8fafc' },
@@ -15,12 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Criar e adicionar o botão toggle e o painel de notas
     const notesContainer = document.createElement('div');
     notesContainer.className = 'notes-container';
-    
+
     const notesToggle = document.createElement('button');
     notesToggle.className = 'notes-toggle';
     notesToggle.innerHTML = '<i class="bi bi-sticky"></i>';
     notesToggle.title = 'Bloco de Notas';
-    
+
     const notesPanel = document.createElement('div');
     notesPanel.className = 'notes-panel';
     notesPanel.innerHTML = `
@@ -34,36 +34,36 @@ document.addEventListener('DOMContentLoaded', function() {
             <button class="note-btn clear"><i class="bi bi-trash"></i> Limpar Todas</button>
         </div>
     `;
-    
+
     document.body.appendChild(notesContainer);
     notesContainer.appendChild(notesToggle);
     notesContainer.appendChild(notesPanel);
-    
+
     // Carregar notas salvas
     let notes = JSON.parse(localStorage.getItem('userNotes')) || [];
-    
+
     // Função para salvar notas no localStorage
     function saveNotes() {
         localStorage.setItem('userNotes', JSON.stringify(notes));
     }
-    
+
     // Criar seletor de cores
     function createColorPicker() {
         const picker = document.createElement('div');
         picker.className = 'note-color-picker';
-        
+
         noteColors.forEach(colorObj => {
             const colorOption = document.createElement('div');
             colorOption.className = `color-option note-color-${colorObj.name}`;
             colorOption.title = colorObj.name.charAt(0).toUpperCase() + colorObj.name.slice(1);
             picker.appendChild(colorOption);
         });
-        
+
         return picker;
     }
-    
+
     let editingIndex = -1;
-    
+
     // Função para renderizar notas
     function renderNotes() {
         document.querySelectorAll('.floating-note').forEach(el => el.remove());
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
             noteElement.style.borderRadius = '12px';
             noteElement.style.cursor = 'move';
             noteElement.dataset.index = index;
-            const pos = note.position || { top: 100 + 40*index, left: 100 + 40*index };
+            const pos = note.position || { top: 100 + 40 * index, left: 100 + 40 * index };
             noteElement.style.top = pos.top + 'px';
             noteElement.style.left = pos.left + 'px';
             // Ícone só no modo escuro
@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
             editBtn.style.border = 'none';
             editBtn.style.cursor = 'pointer';
             editBtn.style.color = '#2563eb';
-            editBtn.addEventListener('click', function(e) {
+            editBtn.addEventListener('click', e => {
                 e.stopPropagation();
                 startInlineEdit();
             });
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
             deleteBtn.style.border = 'none';
             deleteBtn.style.cursor = 'pointer';
             deleteBtn.style.color = '#e53e3e';
-            deleteBtn.addEventListener('click', function(e) {
+            deleteBtn.addEventListener('click', e => {
                 e.stopPropagation();
                 notes.splice(index, 1);
                 saveNotes();
@@ -150,11 +150,13 @@ document.addEventListener('DOMContentLoaded', function() {
             noteElement.appendChild(colorBtn);
             const colorPicker = createColorPicker();
             noteElement.appendChild(colorPicker);
-            colorBtn.addEventListener('click', function(e) {
+            colorBtn.addEventListener('click', e => {
                 e.stopPropagation();
                 const allPickers = document.querySelectorAll('.note-color-picker');
                 allPickers.forEach(picker => {
-                    if (picker !== colorPicker) picker.classList.remove('show');
+                    if (picker !== colorPicker) {
+                        picker.classList.remove('show');
+                    }
                 });
                 colorPicker.classList.toggle('show');
             });
@@ -167,7 +169,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const colorObj = noteColors.find(c => c.name === colorName);
                     colorBtn.style.background = colorObj.color;
                     noteElement.style.background = colorObj.color;
-                    if (colorObj.name === 'blue' || colorObj.name === 'default' || colorObj.name === 'yellow' || colorObj.name === 'orange') {
+                    if (
+                        colorObj.name === 'blue' ||
+                        colorObj.name === 'default' ||
+                        colorObj.name === 'yellow' ||
+                        colorObj.name === 'orange'
+                    ) {
                         noteElement.style.color = '#222';
                     } else {
                         noteElement.style.color = '#fff';
@@ -182,22 +189,34 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             });
             // Drag & drop livre
-            let offsetX, offsetY, isDragging = false;
-            noteElement.addEventListener('mousedown', function(e) {
-                if (e.target.closest('.note-action-btn') || e.target.closest('.note-color-btn') || e.target.tagName === 'TEXTAREA') return;
+            let offsetX,
+                offsetY,
+                isDragging = false;
+            noteElement.addEventListener('mousedown', e => {
+                if (
+                    e.target.closest('.note-action-btn') ||
+                    e.target.closest('.note-color-btn') ||
+                    e.target.tagName === 'TEXTAREA'
+                ) {
+                    return;
+                }
                 isDragging = true;
                 offsetX = e.clientX - noteElement.getBoundingClientRect().left;
                 offsetY = e.clientY - noteElement.getBoundingClientRect().top;
                 noteElement.style.transition = 'none';
                 noteElement.style.opacity = '0.85';
             });
-            document.addEventListener('mousemove', function(e) {
-                if (!isDragging) return;
-                noteElement.style.left = (e.clientX - offsetX) + 'px';
-                noteElement.style.top = (e.clientY - offsetY) + 'px';
+            document.addEventListener('mousemove', e => {
+                if (!isDragging) {
+                    return;
+                }
+                noteElement.style.left = e.clientX - offsetX + 'px';
+                noteElement.style.top = e.clientY - offsetY + 'px';
             });
-            document.addEventListener('mouseup', function(e) {
-                if (!isDragging) return;
+            document.addEventListener('mouseup', e => {
+                if (!isDragging) {
+                    return;
+                }
                 isDragging = false;
                 noteElement.style.opacity = '1';
                 noteElement.style.transition = '';
@@ -212,7 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Função para edição inline
             function startInlineEdit() {
                 // Evita múltiplos textareas
-                if (noteElement.querySelector('textarea')) return;
+                if (noteElement.querySelector('textarea')) {
+                    return;
+                }
                 const textarea = document.createElement('textarea');
                 textarea.value = note.text || note;
                 textarea.style.width = '100%';
@@ -231,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Salvar ao sair do campo
                 textarea.addEventListener('blur', saveInlineEdit);
                 // Salvar ao pressionar Enter (sem Shift)
-                textarea.addEventListener('keydown', function(e) {
+                textarea.addEventListener('keydown', e => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();
                         textarea.blur();
@@ -248,20 +269,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
+
     // Remover event listeners antigos e adicionar novo
     const newNotesToggle = notesToggle.cloneNode(true);
     notesToggle.parentNode.replaceChild(newNotesToggle, notesToggle);
-    newNotesToggle.addEventListener('click', function() {
+    newNotesToggle.addEventListener('click', () => {
         console.log('Botão de notas clicado');
         notesPanel.classList.toggle('show');
     });
-    
+
     // Adicionar nova nota ou editar existente
     const addButton = notesPanel.querySelector('.note-btn.add');
     const noteInput = notesPanel.querySelector('.note-input');
-    
-    addButton.addEventListener('click', function() {
+
+    addButton.addEventListener('click', () => {
         const noteText = noteInput.value.trim();
         if (noteText) {
             const now = new Date();
@@ -278,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     text: noteText,
                     color: noteColors[1].color, // azul
                     created: now.toLocaleString('pt-BR'),
-                    position: { top: 100 + 40*notes.length, left: 100 + 40*notes.length }
+                    position: { top: 100 + 40 * notes.length, left: 100 + 40 * notes.length }
                 });
             }
             noteInput.value = '';
@@ -286,18 +307,18 @@ document.addEventListener('DOMContentLoaded', function() {
             renderNotes();
         }
     });
-    
+
     // Tecla Enter para adicionar nota
-    noteInput.addEventListener('keypress', function(e) {
+    noteInput.addEventListener('keypress', e => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
             addButton.click();
         }
     });
-    
+
     // Limpar todas as notas
     const clearButton = notesPanel.querySelector('.note-btn.clear');
-    clearButton.addEventListener('click', function() {
+    clearButton.addEventListener('click', () => {
         if (notes.length > 0) {
             const confirmed = confirm('Tem certeza que deseja apagar todas as notas?');
             if (confirmed) {
@@ -307,13 +328,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
-    
+
     // Fechar o painel quando clicar fora
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', e => {
         if (!notesContainer.contains(e.target) && notesPanel.classList.contains('show')) {
             notesPanel.classList.remove('show');
         }
-        
+
         // Fechar todos os seletores de cor
         if (!e.target.classList.contains('note-color-btn')) {
             document.querySelectorAll('.note-color-picker').forEach(picker => {
@@ -321,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
     });
-    
+
     // Renderizar notas iniciais
     renderNotes();
 });

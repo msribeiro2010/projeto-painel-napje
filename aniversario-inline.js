@@ -2,13 +2,13 @@
 // Este script modifica a função original para adicionar o evento de clique diretamente
 
 // Espera até que o DOM esteja carregado
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('Inicializando script de aniversário inline...');
-    
+
     // Função para mostrar a animação de aniversário
     window.mostrarAnimacaoAniversario = function(nome) {
         console.log('Mostrando animação para:', nome);
-        
+
         // Dispara confete
         if (typeof confetti === 'function') {
             confetti({
@@ -17,9 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 origin: { y: 0.6 },
                 colors: ['#ffc107', '#ff6b6b', '#4dabf7', '#51cf66', '#be4bdb']
             });
-            
+
             // Foguetes laterais após um curto atraso
-            setTimeout(function() {
+            setTimeout(() => {
                 // Foguete da esquerda
                 confetti({
                     particleCount: 40,
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     scalar: 1.5,
                     ticks: 300
                 });
-                
+
                 // Foguete da direita
                 confetti({
                     particleCount: 40,
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }, 800);
         }
-        
+
         // Cria mensagem de parabéns
         const mensagem = document.createElement('div');
         mensagem.className = 'aniversario-mensagem';
@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
-        
+
         // Adiciona a mensagem ao DOM
         document.body.appendChild(mensagem);
-        
+
         // Reproduz som de festa
         try {
             const audio = new Audio();
@@ -81,58 +81,64 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.log('Erro ao criar elemento de áudio:', error);
         }
-        
+
         // Remove a mensagem após alguns segundos
-        setTimeout(function() {
+        setTimeout(() => {
             mensagem.classList.add('fadeOut');
-            setTimeout(function() {
+            setTimeout(() => {
                 if (document.body.contains(mensagem)) {
                     document.body.removeChild(mensagem);
                 }
             }, 1000);
         }, 8000);
     };
-    
+
     // Modifica a função carregarAniversariantes original
     const originalCarregarAniversariantes = window.carregarAniversariantes;
-    
+
     if (typeof originalCarregarAniversariantes === 'function') {
         console.log('Modificando a função carregarAniversariantes...');
-        
+
         window.carregarAniversariantes = async function() {
             // Chama a função original
             await originalCarregarAniversariantes();
-            
+
             console.log('Adicionando eventos de clique aos aniversariantes...');
-            
+
             // Adiciona eventos de clique a todos os nomes de aniversariantes
-            document.querySelectorAll('.aniversariante-nome').forEach(function(nome) {
+            document.querySelectorAll('.aniversariante-nome').forEach(nome => {
                 // Adiciona estilo de cursor
                 nome.style.cursor = 'pointer';
-                
+
                 // Adiciona atributo de clique diretamente no HTML
-                nome.setAttribute('onclick', `mostrarAnimacaoAniversario('${nome.textContent.trim()}')`);
-                
+                nome.setAttribute(
+                    'onclick',
+                    `mostrarAnimacaoAniversario('${nome.textContent.trim()}')`
+                );
+
                 console.log('Evento de clique adicionado para:', nome.textContent.trim());
             });
         };
     } else {
         console.error('Função carregarAniversariantes não encontrada!');
-        
+
         // Adiciona eventos de clique diretamente
-        setInterval(function() {
-            document.querySelectorAll('.aniversariante-nome').forEach(function(nome) {
+        setInterval(() => {
+            document.querySelectorAll('.aniversariante-nome').forEach(nome => {
                 if (!nome.hasAttribute('onclick')) {
                     nome.style.cursor = 'pointer';
-                    nome.setAttribute('onclick', `mostrarAnimacaoAniversario('${nome.textContent.trim()}')`);
+                    nome.setAttribute(
+                        'onclick',
+                        `mostrarAnimacaoAniversario('${nome.textContent.trim()}')`
+                    );
                     console.log('Evento de clique adicionado para:', nome.textContent.trim());
                 }
             });
         }, 2000);
     }
-    
+
     // Adiciona evento global para garantir que funcione
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', e => {
         if (e.target.classList.contains('aniversariante-nome')) {
             const nome = e.target.textContent.trim();
             console.log('Clique global em aniversariante:', nome);

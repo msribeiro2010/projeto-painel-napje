@@ -4,7 +4,7 @@ function getSupabaseClient() {
 }
 
 function waitForSupabase() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         if (window.supabaseClient) {
             resolve(window.supabaseClient);
         } else {
@@ -26,38 +26,43 @@ class SettingsManager {
     async init() {
         // Aguardar Supabase estar disponível
         await waitForSupabase();
-        
+
         // Verificar autenticação
         await this.checkAuthentication();
-        
+
         // Carregar dados do usuário
         await this.loadUserData();
-        
+
         // Verificar se é primeiro login
         this.checkFirstLogin();
-        
+
         // Configurar event listeners
         this.setupEventListeners();
-        
+
         // Carregar preferências
         await this.loadUserPreferences();
     }
 
     async checkAuthentication() {
         const supabase = getSupabaseClient();
-        const { data: { user }, error } = await supabase.auth.getUser();
-        
+        const {
+            data: { user },
+            error
+        } = await supabase.auth.getUser();
+
         if (error || !user) {
             // Usuário não autenticado, redirecionar para login
             window.location.href = 'auth.html';
             return;
         }
-        
+
         this.currentUser = user;
     }
 
     async loadUserData() {
-        if (!this.currentUser) return;
+        if (!this.currentUser) {
+            return;
+        }
 
         // Carregar dados do perfil
         const supabase = getSupabaseClient();
@@ -83,9 +88,8 @@ class SettingsManager {
         const profileName = document.getElementById('profileName');
         const profileEmail = document.getElementById('profileEmail');
 
-        const displayName = this.userProfile?.full_name || 
-                           this.currentUser.user_metadata?.full_name || 
-                           'Usuário';
+        const displayName =
+            this.userProfile?.full_name || this.currentUser.user_metadata?.full_name || 'Usuário';
         const email = this.currentUser.email;
 
         userName.textContent = displayName;
@@ -96,8 +100,8 @@ class SettingsManager {
 
     checkFirstLogin() {
         const urlParams = new URLSearchParams(window.location.search);
-        const isFirstLogin = urlParams.get('first_login') === 'true' || 
-                            this.userProfile?.first_login;
+        const isFirstLogin =
+            urlParams.get('first_login') === 'true' || this.userProfile?.first_login;
 
         if (isFirstLogin) {
             document.getElementById('firstLoginWarning').style.display = 'block';
@@ -110,25 +114,25 @@ class SettingsManager {
 
     setupEventListeners() {
         // Profile form
-        document.getElementById('profileForm').addEventListener('submit', (e) => {
+        document.getElementById('profileForm').addEventListener('submit', e => {
             e.preventDefault();
             this.handleProfileUpdate();
         });
 
         // Password form
-        document.getElementById('passwordForm').addEventListener('submit', (e) => {
+        document.getElementById('passwordForm').addEventListener('submit', e => {
             e.preventDefault();
             this.handlePasswordChange();
         });
 
         // Preferences form
-        document.getElementById('preferencesForm').addEventListener('submit', (e) => {
+        document.getElementById('preferencesForm').addEventListener('submit', e => {
             e.preventDefault();
             this.handlePreferencesUpdate();
         });
 
         // Password strength indicator
-        document.getElementById('newPassword').addEventListener('input', (e) => {
+        document.getElementById('newPassword').addEventListener('input', e => {
             this.updatePasswordStrength(e.target.value);
         });
 
@@ -138,7 +142,7 @@ class SettingsManager {
         });
 
         // Delete account confirmation
-        document.getElementById('deleteConfirmation').addEventListener('input', (e) => {
+        document.getElementById('deleteConfirmation').addEventListener('input', e => {
             const confirmBtn = document.getElementById('confirmDeleteBtn');
             confirmBtn.disabled = e.target.value !== 'EXCLUIR';
         });
@@ -167,20 +171,19 @@ class SettingsManager {
                     throw emailError;
                 }
 
-                this.showAlert('profileAlert', 
-                    'E-mail atualizado! Verifique sua caixa de entrada para confirmar o novo e-mail.', 
+                this.showAlert(
+                    'profileAlert',
+                    'E-mail atualizado! Verifique sua caixa de entrada para confirmar o novo e-mail.',
                     'warning'
                 );
             }
 
             // Atualizar nome no perfil
-            const { error: profileError } = await supabase
-                .from('user_profiles')
-                .upsert({
-                    user_id: this.currentUser.id,
-                    full_name: name,
-                    updated_at: new Date().toISOString()
-                });
+            const { error: profileError } = await supabase.from('user_profiles').upsert({
+                user_id: this.currentUser.id,
+                full_name: name,
+                updated_at: new Date().toISOString()
+            });
 
             if (profileError) {
                 throw profileError;
@@ -196,18 +199,17 @@ class SettingsManager {
             }
 
             this.showAlert('profileAlert', 'Perfil atualizado com sucesso!', 'success');
-            
+
             // Recarregar dados do usuário
             await this.loadUserData();
-
         } catch (error) {
             console.error('Erro ao atualizar perfil:', error);
             let message = 'Erro ao atualizar perfil. Tente novamente.';
-            
+
             if (error.message.includes('email')) {
                 message = 'Erro ao atualizar e-mail. Verifique se o e-mail é válido.';
             }
-            
+
             this.showAlert('profileAlert', message, 'danger');
         } finally {
             this.setLoading('profileForm', false);
@@ -251,7 +253,7 @@ class SettingsManager {
             if (this.userProfile?.first_login) {
                 await supabase
                     .from('user_profiles')
-                    .update({ 
+                    .update({
                         first_login: false,
                         updated_at: new Date().toISOString()
                     })
@@ -262,19 +264,18 @@ class SettingsManager {
             }
 
             this.showAlert('passwordAlert', 'Senha alterada com sucesso!', 'success');
-            
+
             // Limpar campos
             document.getElementById('passwordForm').reset();
             this.updatePasswordStrength('');
-
         } catch (error) {
             console.error('Erro ao alterar senha:', error);
             let message = 'Erro ao alterar senha. Tente novamente.';
-            
+
             if (error.message.includes('atual incorreta')) {
                 message = 'Senha atual incorreta.';
             }
-            
+
             this.showAlert('passwordAlert', message, 'danger');
         } finally {
             this.setLoading('passwordForm', false);
@@ -297,7 +298,9 @@ class SettingsManager {
 
             // Obter token de acesso
             const supabase = getSupabaseClient();
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session }
+            } = await supabase.auth.getSession();
             if (!session) {
                 throw new Error('Sessão não encontrada');
             }
@@ -307,7 +310,7 @@ class SettingsManager {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.access_token}`
+                    Authorization: `Bearer ${session.access_token}`
                 },
                 body: JSON.stringify({
                     theme: theme,
@@ -325,10 +328,13 @@ class SettingsManager {
             this.applyTheme(theme);
 
             this.showAlert('preferencesAlert', 'Preferências salvas com sucesso!', 'success');
-
         } catch (error) {
             console.error('Erro ao salvar preferências:', error);
-            this.showAlert('preferencesAlert', 'Erro ao salvar preferências. Tente novamente.', 'danger');
+            this.showAlert(
+                'preferencesAlert',
+                'Erro ao salvar preferências. Tente novamente.',
+                'danger'
+            );
         } finally {
             this.setLoading('preferencesForm', false);
         }
@@ -343,7 +349,9 @@ class SettingsManager {
             }
 
             // Obter token de acesso
-            const { data: { session } } = await supabase.auth.getSession();
+            const {
+                data: { session }
+            } = await supabase.auth.getSession();
             if (!session) {
                 console.warn('Sessão não encontrada, não é possível carregar preferências');
                 return;
@@ -353,7 +361,7 @@ class SettingsManager {
             const response = await fetch('/api/supabase/user-settings', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `Bearer ${session.access_token}`
+                    Authorization: `Bearer ${session.access_token}`
                 }
             });
 
@@ -370,14 +378,17 @@ class SettingsManager {
 
             if (settings) {
                 // Aplicar configurações na UI
-                document.querySelector(`input[name="theme"][value="${settings.theme || 'auto'}"]`).checked = true;
-                document.getElementById('emailNotifications').checked = settings.email_notifications !== false;
-                document.getElementById('birthdayNotifications').checked = settings.birthday_notifications !== false;
-                
+                document.querySelector(
+                    `input[name="theme"][value="${settings.theme || 'auto'}"]`
+                ).checked = true;
+                document.getElementById('emailNotifications').checked =
+                    settings.email_notifications !== false;
+                document.getElementById('birthdayNotifications').checked =
+                    settings.birthday_notifications !== false;
+
                 // Aplicar tema
                 this.applyTheme(settings.theme || 'auto');
             }
-
         } catch (error) {
             console.error('Erro ao carregar preferências:', error);
         }
@@ -385,10 +396,10 @@ class SettingsManager {
 
     applyTheme(theme) {
         const body = document.body;
-        
+
         // Remover classes de tema existentes
         body.classList.remove('theme-light', 'theme-dark');
-        
+
         if (theme === 'light') {
             body.classList.add('theme-light');
         } else if (theme === 'dark') {
@@ -486,23 +497,38 @@ class SettingsManager {
         }
 
         let strength = 0;
-        let feedback = [];
+        const feedback = [];
 
         // Verificações de força
-        if (password.length >= 8) strength++;
-        else feedback.push('pelo menos 8 caracteres');
+        if (password.length >= 8) {
+            strength++;
+        } else {
+            feedback.push('pelo menos 8 caracteres');
+        }
 
-        if (/[a-z]/.test(password)) strength++;
-        else feedback.push('letras minúsculas');
+        if (/[a-z]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('letras minúsculas');
+        }
 
-        if (/[A-Z]/.test(password)) strength++;
-        else feedback.push('letras maiúsculas');
+        if (/[A-Z]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('letras maiúsculas');
+        }
 
-        if (/\d/.test(password)) strength++;
-        else feedback.push('números');
+        if (/\d/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('números');
+        }
 
-        if (/[@$!%*#?&]/.test(password)) strength++;
-        else feedback.push('caracteres especiais');
+        if (/[@$!%*#?&]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('caracteres especiais');
+        }
 
         // Atualizar visual
         strengthBar.className = 'strength-bar';
@@ -579,20 +605,11 @@ class SettingsManager {
         try {
             const supabase = getSupabaseClient();
             // Deletar dados do usuário
-            await supabase
-                .from('user_profiles')
-                .delete()
-                .eq('user_id', this.currentUser.id);
+            await supabase.from('user_profiles').delete().eq('user_id', this.currentUser.id);
 
-            await supabase
-                .from('user_settings')
-                .delete()
-                .eq('user_id', this.currentUser.id);
+            await supabase.from('user_settings').delete().eq('user_id', this.currentUser.id);
 
-            await supabase
-                .from('favoritos')
-                .delete()
-                .eq('user_id', this.currentUser.id);
+            await supabase.from('favoritos').delete().eq('user_id', this.currentUser.id);
 
             // Deletar conta do usuário
             const { error } = await supabase.auth.admin.deleteUser(this.currentUser.id);
@@ -603,10 +620,9 @@ class SettingsManager {
 
             // Fazer logout
             await supabase.auth.signOut();
-            
+
             alert('Conta excluída com sucesso.');
             window.location.href = 'auth.html';
-
         } catch (error) {
             console.error('Erro ao excluir conta:', error);
             alert('Erro ao excluir conta. Tente novamente ou entre em contato com o suporte.');
@@ -630,8 +646,10 @@ async function logout() {
     try {
         const supabase = getSupabaseClient();
         const { error } = await supabase.auth.signOut();
-        if (error) throw error;
-        
+        if (error) {
+            throw error;
+        }
+
         window.location.href = 'auth.html';
     } catch (error) {
         console.error('Erro ao fazer logout:', error);

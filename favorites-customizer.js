@@ -48,38 +48,45 @@ const favoritesColors = [
     },
     // Padrões e Estampas
     {
-        background: 'repeating-linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0px, rgba(59, 130, 246, 0.1) 10px, rgba(59, 130, 246, 0.05) 10px, rgba(59, 130, 246, 0.05) 20px)',
+        background:
+            'repeating-linear-gradient(45deg, rgba(59, 130, 246, 0.1) 0px, rgba(59, 130, 246, 0.1) 10px, rgba(59, 130, 246, 0.05) 10px, rgba(59, 130, 246, 0.05) 20px)',
         border: 'rgba(59, 130, 246, 0.3)',
         name: 'Listras Diagonais'
     },
     {
-        background: 'radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.1) 10%, transparent 10.2%, transparent 20%, rgba(236, 72, 153, 0.1) 20.2%, rgba(236, 72, 153, 0.1) 30%, transparent 30.2%, transparent 40%, rgba(236, 72, 153, 0.1) 40.2%, rgba(236, 72, 153, 0.1) 50%, transparent 50.2%)',
+        background:
+            'radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.1) 10%, transparent 10.2%, transparent 20%, rgba(236, 72, 153, 0.1) 20.2%, rgba(236, 72, 153, 0.1) 30%, transparent 30.2%, transparent 40%, rgba(236, 72, 153, 0.1) 40.2%, rgba(236, 72, 153, 0.1) 50%, transparent 50.2%)',
         border: 'rgba(236, 72, 153, 0.3)',
         name: 'Círculos Concêntricos'
     },
     {
-        background: 'linear-gradient(45deg, rgba(139, 92, 246, 0.1) 25%, transparent 25%, transparent 75%, rgba(139, 92, 246, 0.1) 75%), linear-gradient(45deg, rgba(139, 92, 246, 0.1) 25%, transparent 25%, transparent 75%, rgba(139, 92, 246, 0.1) 75%)',
+        background:
+            'linear-gradient(45deg, rgba(139, 92, 246, 0.1) 25%, transparent 25%, transparent 75%, rgba(139, 92, 246, 0.1) 75%), linear-gradient(45deg, rgba(139, 92, 246, 0.1) 25%, transparent 25%, transparent 75%, rgba(139, 92, 246, 0.1) 75%)',
         border: 'rgba(139, 92, 246, 0.3)',
         name: 'Xadrez'
     },
     {
-        background: 'radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%), radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%), radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%)',
+        background:
+            'radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%), radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%), radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.1) 5%, transparent 5.1%)',
         border: 'rgba(16, 185, 129, 0.3)',
         name: 'Bolinhas'
     },
     // Temas Especiais
     {
-        background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%) -10px 0, linear-gradient(225deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%) -10px 0, linear-gradient(315deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%), linear-gradient(45deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%)',
+        background:
+            'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%) -10px 0, linear-gradient(225deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%) -10px 0, linear-gradient(315deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%), linear-gradient(45deg, rgba(0, 0, 0, 0.05) 25%, transparent 25%)',
         border: 'rgba(75, 85, 99, 0.3)',
         name: 'Geométrico'
     },
     {
-        background: 'linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
+        background:
+            'linear-gradient(to right, rgba(255, 255, 255, 0.1) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
         border: 'rgba(255, 255, 255, 0.2)',
         name: 'Grid'
     },
     {
-        background: 'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%)',
+        background:
+            'radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%)',
         border: 'rgba(255, 255, 255, 0.15)',
         name: 'Spotlight'
     },
@@ -121,49 +128,58 @@ const favoritesColors = [
     },
     // Estampas com ícones de TI e emojis
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>💻</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>💻</text></svg>\') repeat #f1f5f9',
         border: '#3b82f6',
         name: 'TI 💻'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🖥️</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🖥️</text></svg>\') repeat #f1f5f9',
         border: '#64748b',
         name: 'Desktop 🖥️'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🛡️</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🛡️</text></svg>\') repeat #f1f5f9',
         border: '#7f56d9',
         name: 'Segurança 🛡️'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>⚡</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>⚡</text></svg>\') repeat #f1f5f9',
         border: '#facc15',
         name: 'Energia ⚡'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🌐</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🌐</text></svg>\') repeat #f1f5f9',
         border: '#3b82f6',
         name: 'Web 🌐'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🔒</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'25\' font-size=\'24\'>🔒</text></svg>\') repeat #f1f5f9',
         border: '#18181b',
         name: 'Privacidade 🔒'
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>🐭</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>🐭</text></svg>\') repeat #f1f5f9',
         border: '#64748b',
         name: 'Rato Correndo',
         animated: true
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>🐱</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>🐱</text></svg>\') repeat #f1f5f9',
         border: '#e11d48',
         name: 'Gato Curioso',
         animated: true
     },
     {
-        background: "url('data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>👁️</text></svg>') repeat #f1f5f9",
+        background:
+            'url(\'data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\'><text x=\'0\' y=\'28\' font-size=\'32\'>👁️</text></svg>\') repeat #f1f5f9',
         border: '#3b82f6',
         name: 'Olho Observador',
         animated: true
@@ -203,7 +219,8 @@ const animatedColors = [
         name: 'Listras'
     },
     {
-        background: 'radial-gradient(circle at 10px 10px, #3182ce 8px, transparent 8px), radial-gradient(circle at 30px 30px, #fcd34d 8px, transparent 8px)',
+        background:
+            'radial-gradient(circle at 10px 10px, #3182ce 8px, transparent 8px), radial-gradient(circle at 30px 30px, #fcd34d 8px, transparent 8px)',
         border: '#3182ce',
         name: 'Bolinhas'
     },
@@ -229,12 +246,12 @@ const animatedColors = [
 function initFavoritesCustomizer() {
     const favoritesContainer = document.querySelector('.favorites-container');
     const favoritesHeader = document.querySelector('.favorites-header');
-    
+
     if (!favoritesContainer || !favoritesHeader) {
         console.error('Containers não encontrados');
         return;
     }
-    
+
     // Criar overlay se ainda não existir
     let overlay = document.querySelector('.color-panel-overlay');
     if (!overlay) {
@@ -242,7 +259,7 @@ function initFavoritesCustomizer() {
         overlay.className = 'color-panel-overlay';
         document.body.appendChild(overlay);
     }
-    
+
     // Criar botão de personalização se ainda não existir
     let customizeBtn = document.querySelector('.favorites-customize-btn');
     if (!customizeBtn) {
@@ -273,7 +290,9 @@ function initFavoritesCustomizer() {
     } else {
         // Se já existe, remova a legenda se houver
         const label = customizeBtn.querySelector('.favorites-customize-label');
-        if (label) label.remove();
+        if (label) {
+            label.remove();
+        }
         customizeBtn.classList.add('favorites-customize-btn-compact');
         customizeBtn.style.width = '26px';
         customizeBtn.style.height = '26px';
@@ -291,25 +310,25 @@ function initFavoritesCustomizer() {
             customizeBtn.querySelector('i').style.color = '#3182ce';
         }
     }
-    
+
     // Criar painel de cores se ainda não existir
     let colorPanel = document.querySelector('.favorites-color-panel');
     if (!colorPanel) {
         colorPanel = document.createElement('div');
         colorPanel.className = 'favorites-color-panel';
         document.body.appendChild(colorPanel);
-        
+
         // Adicionar título ao painel
         const panelTitle = document.createElement('div');
         panelTitle.className = 'favorites-color-panel-title';
         panelTitle.textContent = 'Escolha um tema';
         colorPanel.appendChild(panelTitle);
-        
+
         // Container para as opções de cores
         const colorOptionsContainer = document.createElement('div');
         colorOptionsContainer.className = 'favorites-color-options-container';
         colorPanel.appendChild(colorOptionsContainer);
-        
+
         // Adicionar opções de cores ao painel
         favoritesColors.forEach(color => {
             const colorOption = document.createElement('div');
@@ -317,58 +336,64 @@ function initFavoritesCustomizer() {
             colorOption.style.background = color.background;
             colorOption.style.border = `2px solid ${color.border}`;
             colorOption.title = color.name;
-            
+
             // Adicionar nome da cor abaixo da opção
             const colorName = document.createElement('span');
             colorName.className = 'favorites-color-name';
             colorName.textContent = color.name;
-            
+
             const colorWrapper = document.createElement('div');
             colorWrapper.className = 'favorites-color-wrapper';
             colorWrapper.appendChild(colorOption);
             colorWrapper.appendChild(colorName);
-            
+
             colorWrapper.addEventListener('click', function() {
                 // Remover a classe selected de todas as opções
                 document.querySelectorAll('.favorites-color-wrapper').forEach(wrapper => {
                     wrapper.classList.remove('selected');
                 });
-                
+
                 // Adicionar a classe selected à opção clicada
                 this.classList.add('selected');
-                
+
                 // Aplicar a cor ao container com transição suave
-                favoritesContainer.style.transition = 'background 0.3s ease, border-color 0.3s ease';
+                favoritesContainer.style.transition =
+                    'background 0.3s ease, border-color 0.3s ease';
                 // Garante que o background inline prevaleça
                 favoritesContainer.style.setProperty('background', color.background, 'important');
                 favoritesContainer.style.setProperty('border-color', color.border, 'important');
-                
+
                 // Se o tema for muito claro/transparente e estiver no modo claro, aumenta opacidade
-                const isLight = !document.body.classList.contains('dark') && window.matchMedia('(prefers-color-scheme: light)').matches;
+                const isLight =
+                    !document.body.classList.contains('dark') &&
+                    window.matchMedia('(prefers-color-scheme: light)').matches;
                 if (isLight && color.background.match(/rgba\((\d+), (\d+), (\d+), (0\.[0-3])\)/)) {
-                  // Se for muito transparente, aumenta opacidade
-                  const newBg = color.background.replace(/rgba\((\d+), (\d+), (\d+), (0\.[0-3])\)/g, 'rgba($1, $2, $3, 0.12)');
-                  favoritesContainer.style.setProperty('background', newBg, 'important');
+                    // Se for muito transparente, aumenta opacidade
+                    const newBg = color.background.replace(
+                        /rgba\((\d+), (\d+), (\d+), (0\.[0-3])\)/g,
+                        'rgba($1, $2, $3, 0.12)'
+                    );
+                    favoritesContainer.style.setProperty('background', newBg, 'important');
                 }
-                
+
                 // Salvar a preferência no localStorage
                 localStorage.setItem('favoritesContainerColor', color.background);
                 localStorage.setItem('favoritesContainerBorder', color.border);
                 localStorage.setItem('favoritesContainerColorName', color.name);
-                
+
                 // Fechar o painel e overlay com atraso para feedback visual
                 setTimeout(() => {
                     colorPanel.style.display = 'none';
                     overlay.style.display = 'none';
                 }, 300);
-                
+
                 // Adicionar efeito visual de feedback
                 favoritesContainer.classList.add('color-changed');
                 favoritesContainer.classList.toggle('animated-bg', !!color.animated);
                 setTimeout(() => {
                     favoritesContainer.classList.remove('color-changed');
                 }, 500);
-                
+
                 showFeedbackMessage(`Tema ${color.name} aplicado com sucesso!`);
 
                 const emojiMap = {
@@ -377,7 +402,7 @@ function initFavoritesCustomizer() {
                     'Segurança 🛡️': '🛡️',
                     'Energia ⚡': '⚡',
                     'Web 🌐': '🌐',
-                    'Privacidade 🔒': '🔒',
+                    'Privacidade 🔒': '🔒'
                 };
                 if (emojiMap[color.name]) {
                     showFavoritesEmoji(emojiMap[color.name]);
@@ -403,14 +428,14 @@ function initFavoritesCustomizer() {
                     hidePulsarEffect();
                 }
             });
-            
+
             if (color.animated) {
                 colorOption.classList.add('animated-bg');
                 colorOption.style.backgroundSize = '40px 40px';
             } else if (color.background && color.background.includes('svg+xml')) {
                 colorOption.style.backgroundSize = '40px 40px';
             }
-            
+
             colorOptionsContainer.appendChild(colorWrapper);
         });
 
@@ -439,7 +464,8 @@ function initFavoritesCustomizer() {
                     wrapper.classList.remove('selected');
                 });
                 this.classList.add('selected');
-                favoritesContainer.style.transition = 'background 0.3s ease, border-color 0.3s ease';
+                favoritesContainer.style.transition =
+                    'background 0.3s ease, border-color 0.3s ease';
                 favoritesContainer.style.background = color.background;
                 favoritesContainer.style.borderColor = color.border;
                 localStorage.setItem('favoritesContainerColor', color.background);
@@ -462,7 +488,7 @@ function initFavoritesCustomizer() {
                     'Segurança 🛡️': '🛡️',
                     'Energia ⚡': '⚡',
                     'Web 🌐': '🌐',
-                    'Privacidade 🔒': '🔒',
+                    'Privacidade 🔒': '🔒'
                 };
                 if (emojiMap[color.name]) {
                     showFavoritesEmoji(emojiMap[color.name]);
@@ -491,25 +517,25 @@ function initFavoritesCustomizer() {
             colorOptionsContainer.appendChild(colorWrapper);
         });
     }
-    
+
     // Configurar evento de clique no botão
-    customizeBtn.addEventListener('click', function(event) {
+    customizeBtn.addEventListener('click', event => {
         event.stopPropagation();
         event.preventDefault();
-        
+
         const isOpen = colorPanel.style.display === 'block';
-        
+
         if (isOpen) {
             colorPanel.style.display = 'none';
             overlay.style.display = 'none';
         } else {
             colorPanel.style.display = 'block';
             overlay.style.display = 'block';
-            
+
             // Marcar a cor atual como selecionada
             const currentColor = localStorage.getItem('favoritesContainerColor');
             const currentColorName = localStorage.getItem('favoritesContainerColorName');
-            
+
             document.querySelectorAll('.favorites-color-wrapper').forEach(wrapper => {
                 wrapper.classList.remove('selected');
                 const colorOption = wrapper.querySelector('.favorites-color-option');
@@ -517,12 +543,15 @@ function initFavoritesCustomizer() {
                     wrapper.classList.add('selected');
                 }
             });
-            
+
             // Se não encontrou a cor pelo background, tentar pelo nome
             if (currentColorName && !document.querySelector('.favorites-color-wrapper.selected')) {
                 const colorWrappers = document.querySelectorAll('.favorites-color-wrapper');
-                for (let wrapper of colorWrappers) {
-                    if (wrapper.querySelector('.favorites-color-name').textContent === currentColorName) {
+                for (const wrapper of colorWrappers) {
+                    if (
+                        wrapper.querySelector('.favorites-color-name').textContent ===
+                        currentColorName
+                    ) {
                         wrapper.classList.add('selected');
                         break;
                     }
@@ -530,21 +559,21 @@ function initFavoritesCustomizer() {
             }
         }
     });
-    
+
     // Fechar o painel quando clicar no overlay
-    overlay.addEventListener('click', function() {
+    overlay.addEventListener('click', () => {
         colorPanel.style.display = 'none';
         overlay.style.display = 'none';
     });
-    
+
     // Fechar o painel quando pressionar ESC
-    document.addEventListener('keydown', function(event) {
+    document.addEventListener('keydown', event => {
         if (event.key === 'Escape') {
             colorPanel.style.display = 'none';
             overlay.style.display = 'none';
         }
     });
-    
+
     // Carregar cor salva, se existir
     const savedBackground = localStorage.getItem('favoritesContainerColor');
     const savedBorder = localStorage.getItem('favoritesContainerBorder');
@@ -588,7 +617,9 @@ function initFavoritesCustomizer() {
 
 // Adicionar estilo CSS para a mensagem de feedback
 function addFeedbackStyles() {
-    if (document.getElementById('favorites-animated-bg-style')) return;
+    if (document.getElementById('favorites-animated-bg-style')) {
+        return;
+    }
     const style = document.createElement('style');
     style.id = 'favorites-animated-bg-style';
     style.textContent = `
@@ -830,7 +861,9 @@ function showFavoritesEmoji(emoji) {
 
 function hideFavoritesEmoji() {
     const emojiSpan = document.getElementById('favorites-emoji-bg');
-    if (emojiSpan) emojiSpan.style.display = 'none';
+    if (emojiSpan) {
+        emojiSpan.style.display = 'none';
+    }
 }
 
 // Função para ativar/desativar o efeito Matrix
@@ -856,7 +889,8 @@ function showMatrixEffect() {
     matrixCanvas.height = container.offsetHeight;
     // Matrix effect
     const ctx = matrixCanvas.getContext('2d');
-    const letters = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const letters =
+        'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズヅブプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const fontSize = 18;
     const columns = Math.floor(matrixCanvas.width / fontSize);
     const drops = Array(columns).fill(1);
@@ -883,13 +917,17 @@ function showMatrixEffect() {
         }
         ctx.globalAlpha = 1;
     }
-    if (window.favoritesMatrixInterval) clearInterval(window.favoritesMatrixInterval);
+    if (window.favoritesMatrixInterval) {
+        clearInterval(window.favoritesMatrixInterval);
+    }
     window.favoritesMatrixInterval = setInterval(drawMatrix, 60);
     // Redimensionar ao mudar tamanho do container
     window.addEventListener('resize', hideMatrixEffect);
 
     // Deixar os botões dos atalhos em verde Matrix
-    const favButtons = document.querySelectorAll('.favorites-container .favorite-item button, .favorites-container button');
+    const favButtons = document.querySelectorAll(
+        '.favorites-container .favorite-item button, .favorites-container button'
+    );
     favButtons.forEach(btn => {
         btn.style.background = 'linear-gradient(90deg, #22c55e 0%, #4ade80 100%)';
         btn.style.color = '#fff';
@@ -900,11 +938,17 @@ function showMatrixEffect() {
 }
 function hideMatrixEffect() {
     const matrixCanvas = document.getElementById('favorites-matrix-canvas');
-    if (matrixCanvas) matrixCanvas.remove();
-    if (window.favoritesMatrixInterval) clearInterval(window.favoritesMatrixInterval);
+    if (matrixCanvas) {
+        matrixCanvas.remove();
+    }
+    if (window.favoritesMatrixInterval) {
+        clearInterval(window.favoritesMatrixInterval);
+    }
     window.removeEventListener('resize', hideMatrixEffect);
     // Restaurar botões
-    const favButtons = document.querySelectorAll('.favorites-container .favorite-item button, .favorites-container button');
+    const favButtons = document.querySelectorAll(
+        '.favorites-container .favorite-item button, .favorites-container button'
+    );
     favButtons.forEach(btn => {
         btn.style.background = '';
         btn.style.color = '';
@@ -932,9 +976,9 @@ function hidePulsarEffect() {
 }
 
 // Inicializar quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     initFavoritesCustomizer();
-    
+
     // Adicionar estilos para feedback
     addFeedbackStyles();
 });

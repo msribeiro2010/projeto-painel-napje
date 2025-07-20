@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
     // Criar o popup do calendário
     const calendarPopup = document.createElement('div');
     calendarPopup.className = 'calendar-popup';
@@ -11,19 +11,29 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     dateContainer.classList.add('footer-calendar');
-    
+
     // Data atual
-    let currentDate = new Date();
+    const currentDate = new Date();
     let currentMonth = currentDate.getMonth();
     let currentYear = currentDate.getFullYear();
     let isYearView = false;
-    
+
     // Nomes dos meses e dias da semana
     const months = [
-        'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-        'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+        'Janeiro',
+        'Fevereiro',
+        'Março',
+        'Abril',
+        'Maio',
+        'Junho',
+        'Julho',
+        'Agosto',
+        'Setembro',
+        'Outubro',
+        'Novembro',
+        'Dezembro'
     ];
-    
+
     const weekdays = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
     // Função para gerar a visualização do ano
@@ -43,7 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
         months.forEach((month, index) => {
             const today = new Date();
             const isCurrentMonth = today.getMonth() === index && today.getFullYear() === year;
-            
+
             html += `
                 <div class="month-card${isCurrentMonth ? ' current-month' : ''}" data-month="${index}">
                     <div class="month-name">${month}</div>
@@ -53,22 +63,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
         html += '</div>';
         calendarPopup.innerHTML = html;
-        
+
         // Eventos de navegação do ano
-        calendarPopup.querySelector('.prev-year').addEventListener('click', function(e) {
+        calendarPopup.querySelector('.prev-year').addEventListener('click', e => {
             e.stopPropagation();
             currentYear--;
             generateYearView(currentYear);
         });
-        
-        calendarPopup.querySelector('.next-year').addEventListener('click', function(e) {
+
+        calendarPopup.querySelector('.next-year').addEventListener('click', e => {
             e.stopPropagation();
             currentYear++;
             generateYearView(currentYear);
         });
 
         // Alternar para visualização mensal
-        calendarPopup.querySelector('.toggle-view').addEventListener('click', function(e) {
+        calendarPopup.querySelector('.toggle-view').addEventListener('click', e => {
             e.stopPropagation();
             isYearView = false;
             generateCalendar(currentMonth, currentYear);
@@ -84,14 +94,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
+
     // Função para gerar o calendário mensal
     function generateCalendar(month, year) {
         const firstDay = new Date(year, month, 1);
         const lastDay = new Date(year, month + 1, 0);
         const startingDay = firstDay.getDay();
         const monthLength = lastDay.getDate();
-        
+
         let html = `
             <div class="calendar-header">
                 <div class="calendar-title">${months[month]} ${year}</div>
@@ -103,26 +113,27 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             <div class="calendar-grid">
         `;
-        
+
         // Adicionar dias da semana
         weekdays.forEach(day => {
             html += `<div class="calendar-weekday">${day}</div>`;
         });
-        
+
         // Adicionar dias do mês anterior
         const prevMonth = new Date(year, month, 0);
         const prevMonthLength = prevMonth.getDate();
         for (let i = startingDay - 1; i >= 0; i--) {
             html += `<div class="calendar-day other-month">${prevMonthLength - i}</div>`;
         }
-        
+
         // Adicionar dias do mês atual
         const today = new Date();
         for (let day = 1; day <= monthLength; day++) {
-            const isToday = day === today.getDate() && 
-                           month === today.getMonth() && 
-                           year === today.getFullYear();
-            
+            const isToday =
+                day === today.getDate() &&
+                month === today.getMonth() &&
+                year === today.getFullYear();
+
             html += `
                 <div class="calendar-day${isToday ? ' today' : ''}" 
                      data-date="${year}-${month + 1}-${day}">
@@ -130,18 +141,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
-        
+
         // Adicionar dias do próximo mês
         const remainingDays = 42 - (startingDay + monthLength);
         for (let i = 1; i <= remainingDays; i++) {
             html += `<div class="calendar-day other-month">${i}</div>`;
         }
-        
+
         html += '</div>';
         calendarPopup.innerHTML = html;
-        
+
         // Eventos de navegação
-        calendarPopup.querySelector('.prev-month').addEventListener('click', function(e) {
+        calendarPopup.querySelector('.prev-month').addEventListener('click', e => {
             e.stopPropagation();
             currentMonth--;
             if (currentMonth < 0) {
@@ -150,8 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             generateCalendar(currentMonth, currentYear);
         });
-        
-        calendarPopup.querySelector('.next-month').addEventListener('click', function(e) {
+
+        calendarPopup.querySelector('.next-month').addEventListener('click', e => {
             e.stopPropagation();
             currentMonth++;
             if (currentMonth > 11) {
@@ -162,12 +173,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Alternar para visualização anual
-        calendarPopup.querySelector('.toggle-view').addEventListener('click', function(e) {
+        calendarPopup.querySelector('.toggle-view').addEventListener('click', e => {
             e.stopPropagation();
             isYearView = true;
             generateYearView(currentYear);
         });
-        
+
         // Eventos dos dias
         calendarPopup.querySelectorAll('.calendar-day:not(.other-month)').forEach(day => {
             day.addEventListener('click', function(e) {
@@ -177,12 +188,12 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
-    
+
     // Toggle do calendário ao clicar no container da data
-    dateContainer.addEventListener('click', function(e) {
+    dateContainer.addEventListener('click', e => {
         e.stopPropagation();
         const isVisible = calendarPopup.classList.contains('show');
-        
+
         if (!isVisible) {
             if (isYearView) {
                 generateYearView(currentYear);
@@ -192,14 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 generateCalendar(currentMonth, currentYear);
             }
         }
-        
+
         calendarPopup.classList.toggle('show');
     });
-    
+
     // Fechar calendário ao clicar fora
-    document.addEventListener('click', function(e) {
+    document.addEventListener('click', e => {
         if (!calendarPopup.contains(e.target) && !dateContainer.contains(e.target)) {
             calendarPopup.classList.remove('show');
         }
     });
-}); 
+});

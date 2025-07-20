@@ -2,45 +2,53 @@
 function getSupabaseClient() {
     console.log('🔍 Verificando cliente Supabase...');
     console.log('window.supabaseClient:', window.supabaseClient);
-    
+
     if (!window.supabaseClient) {
         console.error('❌ Supabase client não está disponível');
         return null;
     }
-    
+
     console.log('✅ Cliente Supabase disponível');
     return window.supabaseClient;
 }
 
 function waitForSupabase() {
     console.log('⏳ Aguardando Supabase...');
-    
+
     return new Promise((resolve, reject) => {
         let attempts = 0;
         const maxAttempts = 50; // 5 segundos máximo
-        
+
         const checkSupabase = () => {
             attempts++;
             console.log(`🔄 Tentativa ${attempts}/${maxAttempts}`);
-            
+
             // Verificar se o Supabase está disponível
             if (window.supabaseClient) {
                 console.log('✅ Supabase client já disponível!');
                 resolve(window.supabaseClient);
                 return;
             }
-            
+
             console.log('🔍 Verificando variáveis:', {
                 supabase: !!window.supabase,
                 url: !!window.SUPABASE_URL,
                 key: !!window.SUPABASE_ANON_KEY
             });
-            
+
             // Tentar inicializar se ainda não foi feito
-            if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY && !window.supabaseClient) {
+            if (
+                window.supabase &&
+                window.SUPABASE_URL &&
+                window.SUPABASE_ANON_KEY &&
+                !window.supabaseClient
+            ) {
                 try {
                     console.log('🚀 Inicializando cliente Supabase...');
-                    window.supabaseClient = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                    window.supabaseClient = window.supabase.createClient(
+                        window.SUPABASE_URL,
+                        window.SUPABASE_ANON_KEY
+                    );
                     console.log('✅ Cliente Supabase inicializado com sucesso!');
                     resolve(window.supabaseClient);
                     return;
@@ -48,16 +56,16 @@ function waitForSupabase() {
                     console.error('❌ Erro ao inicializar Supabase:', error);
                 }
             }
-            
+
             if (attempts >= maxAttempts) {
                 console.error('❌ Timeout: Supabase não pôde ser inicializado');
                 reject(new Error('Timeout: Supabase não pôde ser inicializado'));
                 return;
             }
-            
+
             setTimeout(checkSupabase, 100);
         };
-        
+
         checkSupabase();
     });
 }
@@ -71,20 +79,20 @@ class AuthManager {
 
     async init() {
         console.log('🚀 Inicializando AuthManager...');
-        
+
         try {
             console.log('⏳ Aguardando Supabase...');
             await waitForSupabase();
-            
+
             console.log('🔗 Obtendo cliente Supabase...');
             const supabase = getSupabaseClient();
-            
+
             if (!supabase) {
                 throw new Error('Falha ao obter cliente Supabase');
             }
-            
+
             console.log('✅ Supabase disponível, configurando listeners básicos...');
-            
+
             // Configurar listeners de autenticação
             supabase.auth.onAuthStateChange((event, session) => {
                 console.log('🔄 Auth state change:', event, session?.user?.email || 'no user');
@@ -94,11 +102,11 @@ class AuthManager {
 
             console.log('🎯 Configurando event listeners...');
             this.setupEventListeners();
-            
+
             console.log('✅ AuthManager inicializado com sucesso!');
         } catch (error) {
             console.error('❌ Erro ao inicializar AuthManager:', error);
-            
+
             // Mostrar erro na interface
             const loginAlert = document.getElementById('loginAlert');
             if (loginAlert) {
@@ -114,51 +122,51 @@ class AuthManager {
 
     setupEventListeners() {
         // Login form
-        document.getElementById('loginFormElement')?.addEventListener('submit', (e) => {
+        document.getElementById('loginFormElement')?.addEventListener('submit', e => {
             e.preventDefault();
             this.handleLogin();
         });
 
         // Register form
-        document.getElementById('registerFormElement')?.addEventListener('submit', (e) => {
+        document.getElementById('registerFormElement')?.addEventListener('submit', e => {
             e.preventDefault();
             this.handleRegister();
         });
 
         // Forgot password form
-        document.getElementById('forgotPasswordFormElement')?.addEventListener('submit', (e) => {
+        document.getElementById('forgotPasswordFormElement')?.addEventListener('submit', e => {
             e.preventDefault();
             this.handleForgotPassword();
         });
 
         // Reset password form
-        document.getElementById('resetPasswordFormElement')?.addEventListener('submit', (e) => {
+        document.getElementById('resetPasswordFormElement')?.addEventListener('submit', e => {
             e.preventDefault();
             this.handleResetPassword();
         });
 
         // Password strength indicators
-        document.getElementById('registerPassword')?.addEventListener('input', (e) => {
+        document.getElementById('registerPassword')?.addEventListener('input', e => {
             this.updatePasswordStrength(e.target.value, 'register');
         });
 
-        document.getElementById('resetPassword')?.addEventListener('input', (e) => {
+        document.getElementById('resetPassword')?.addEventListener('input', e => {
             this.updatePasswordStrength(e.target.value, 'reset');
         });
 
         // Confirm password validation
-        document.getElementById('registerConfirmPassword')?.addEventListener('input', (e) => {
+        document.getElementById('registerConfirmPassword')?.addEventListener('input', e => {
             this.validatePasswordConfirmation('register');
         });
 
-        document.getElementById('resetConfirmPassword')?.addEventListener('input', (e) => {
+        document.getElementById('resetConfirmPassword')?.addEventListener('input', e => {
             this.validatePasswordConfirmation('reset');
         });
     }
 
     async handleLogin() {
         console.log('🔐 Iniciando processo de login...');
-        
+
         const email = document.getElementById('loginEmail').value;
         const password = document.getElementById('loginPassword').value;
         const rememberMe = document.getElementById('rememberMe').checked;
@@ -178,11 +186,11 @@ class AuthManager {
         try {
             console.log('🔄 Obtendo cliente Supabase...');
             const supabase = getSupabaseClient();
-            
+
             if (!supabase) {
                 throw new Error('Cliente Supabase não disponível');
             }
-            
+
             console.log('🚀 Tentando fazer login...');
             const { data, error } = await supabase.auth.signInWithPassword({
                 email,
@@ -207,7 +215,7 @@ class AuthManager {
             }
 
             this.showAlert('loginAlert', 'Login realizado com sucesso!', 'success');
-            
+
             // Verificar se é o primeiro login do admin
             if (email === 'msribeiro@trt15.jus.br') {
                 console.log('👤 Verificando primeiro login do admin...');
@@ -232,17 +240,16 @@ class AuthManager {
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);
-
         } catch (error) {
             console.error('❌ Erro no login:', error);
             let message = 'Erro ao fazer login. Tente novamente.';
-            
+
             if (error.message.includes('Invalid login credentials')) {
                 message = 'E-mail ou senha incorretos.';
             } else if (error.message.includes('Email not confirmed')) {
                 message = 'Por favor, confirme seu e-mail antes de fazer login.';
             }
-            
+
             this.showAlert('loginAlert', message, 'danger');
         } finally {
             this.setLoading('loginFormElement', false);
@@ -281,33 +288,33 @@ class AuthManager {
 
             if (data.user && !data.session) {
                 // E-mail de confirmação foi enviado
-                this.showAlert('registerAlert', 
-                    'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.', 
+                this.showAlert(
+                    'registerAlert',
+                    'Conta criada com sucesso! Verifique seu e-mail para confirmar a conta.',
                     'success'
                 );
-                
+
                 setTimeout(() => {
                     this.showLogin();
                 }, 3000);
             } else {
                 // Usuário foi criado e logado automaticamente
                 this.showAlert('registerAlert', 'Conta criada com sucesso!', 'success');
-                
+
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
             }
-
         } catch (error) {
             console.error('Erro no registro:', error);
             let message = 'Erro ao criar conta. Tente novamente.';
-            
+
             if (error.message.includes('User already registered')) {
                 message = 'Este e-mail já está cadastrado.';
             } else if (error.message.includes('Password should be at least')) {
                 message = 'A senha deve ter pelo menos 6 caracteres.';
             }
-            
+
             this.showAlert('registerAlert', message, 'danger');
         } finally {
             this.setLoading('registerFormElement', false);
@@ -335,19 +342,20 @@ class AuthManager {
                 throw error;
             }
 
-            this.showAlert('forgotAlert', 
-                'Link de recuperação enviado! Verifique seu e-mail.', 
+            this.showAlert(
+                'forgotAlert',
+                'Link de recuperação enviado! Verifique seu e-mail.',
                 'success'
             );
 
             setTimeout(() => {
                 this.showLogin();
             }, 3000);
-
         } catch (error) {
             console.error('Erro ao enviar e-mail de recuperação:', error);
-            this.showAlert('forgotAlert', 
-                'Erro ao enviar e-mail de recuperação. Tente novamente.', 
+            this.showAlert(
+                'forgotAlert',
+                'Erro ao enviar e-mail de recuperação. Tente novamente.',
                 'danger'
             );
         } finally {
@@ -381,13 +389,9 @@ class AuthManager {
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1500);
-
         } catch (error) {
             console.error('Erro ao redefinir senha:', error);
-            this.showAlert('resetAlert', 
-                'Erro ao redefinir senha. Tente novamente.', 
-                'danger'
-            );
+            this.showAlert('resetAlert', 'Erro ao redefinir senha. Tente novamente.', 'danger');
         } finally {
             this.setLoading('resetPasswordFormElement', false);
         }
@@ -403,7 +407,7 @@ class AuthManager {
                 .eq('role', 'admin')
                 .limit(1)
                 .single();
-            
+
             if (!existingProfile) {
                 console.log('Criando usuário administrador...');
                 // Criar usuário administrador
@@ -428,7 +432,7 @@ class AuthManager {
                             email: 'msribeiro@trt15.jus.br',
                             password: 'TrT15@2025tmp'
                         });
-                        
+
                         if (loginData.user) {
                             await this.createAdminProfile(loginData.user.id);
                         }
@@ -448,18 +452,19 @@ class AuthManager {
     async createAdminProfile(userId) {
         try {
             const supabase = getSupabaseClient();
-            const { error } = await supabase
-                .from('user_profiles')
-                .upsert({
+            const { error } = await supabase.from('user_profiles').upsert(
+                {
                     user_id: userId,
                     full_name: 'Marcelo S Ribeiro',
                     role: 'admin',
                     first_login: true,
                     created_at: new Date().toISOString(),
                     updated_at: new Date().toISOString()
-                }, {
+                },
+                {
                     onConflict: 'user_id'
-                });
+                }
+            );
 
             if (error) {
                 console.error('Erro ao criar perfil admin:', error);
@@ -497,7 +502,7 @@ class AuthManager {
         console.log('🔍 Validando formulário de login...');
         console.log('Email válido:', this.validateEmail(email));
         console.log('Senha válida:', password && password.length >= 1);
-        
+
         let isValid = true;
 
         if (!this.validateEmail(email)) {
@@ -536,8 +541,9 @@ class AuthManager {
         if (!this.validateInstitutionalEmail(email)) {
             this.setFieldInvalid('registerEmail');
             // Mostrar mensagem específica sobre email institucional
-            this.showAlert('registerAlert', 
-                'Por favor, use um email institucional @trt15.jus.br para se registrar.', 
+            this.showAlert(
+                'registerAlert',
+                'Por favor, use um email institucional @trt15.jus.br para se registrar.',
                 'warning'
             );
             isValid = false;
@@ -592,7 +598,7 @@ class AuthManager {
         if (!this.validateEmail(email)) {
             return false;
         }
-        
+
         // Verificar se é do domínio institucional
         const allowedDomain = '@trt15.jus.br';
         return email.toLowerCase().endsWith(allowedDomain);
@@ -627,23 +633,38 @@ class AuthManager {
         }
 
         let strength = 0;
-        let feedback = [];
+        const feedback = [];
 
         // Verificações de força
-        if (password.length >= 8) strength++;
-        else feedback.push('pelo menos 8 caracteres');
+        if (password.length >= 8) {
+            strength++;
+        } else {
+            feedback.push('pelo menos 8 caracteres');
+        }
 
-        if (/[a-z]/.test(password)) strength++;
-        else feedback.push('letras minúsculas');
+        if (/[a-z]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('letras minúsculas');
+        }
 
-        if (/[A-Z]/.test(password)) strength++;
-        else feedback.push('letras maiúsculas');
+        if (/[A-Z]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('letras maiúsculas');
+        }
 
-        if (/\d/.test(password)) strength++;
-        else feedback.push('números');
+        if (/\d/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('números');
+        }
 
-        if (/[@$!%*#?&]/.test(password)) strength++;
-        else feedback.push('caracteres especiais');
+        if (/[@$!%*#?&]/.test(password)) {
+            strength++;
+        } else {
+            feedback.push('caracteres especiais');
+        }
 
         // Atualizar visual
         strengthBar.className = 'strength-bar';
@@ -753,8 +774,10 @@ class AuthManager {
         try {
             const supabase = getSupabaseClient();
             const { error } = await supabase.auth.signOut();
-            if (error) throw error;
-            
+            if (error) {
+                throw error;
+            }
+
             window.location.href = 'auth.html';
         } catch (error) {
             console.error('Erro ao fazer logout:', error);
@@ -790,20 +813,20 @@ function showResetPassword() {
 }
 
 // Inicializar AuthManager quando a página carregar
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async() => {
     console.log('📄 DOM carregado, inicializando AuthManager...');
-    
+
     try {
         const authManager = new AuthManager();
         console.log('🏗️ AuthManager criado, iniciando init...');
         await authManager.init();
         console.log('🎉 AuthManager inicializado com sucesso!');
-        
+
         // Exportar para uso global
         window.authManager = authManager;
     } catch (error) {
         console.error('💥 Erro fatal na inicialização:', error);
-        
+
         // Mostrar erro na interface
         const loginAlert = document.getElementById('loginAlert');
         if (loginAlert) {

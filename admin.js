@@ -4,7 +4,7 @@ function getSupabaseClient() {
 }
 
 function waitForSupabase() {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
         if (window.supabaseClient) {
             resolve(window.supabaseClient);
         } else {
@@ -22,7 +22,7 @@ let activeSessions = [];
 let adminActions = [];
 
 // Inicialização
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async() => {
     await waitForSupabase();
     await checkAuth();
     await loadUsers();
@@ -35,8 +35,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function checkAuth() {
     try {
         const supabase = getSupabaseClient();
-        const { data: { user }, error } = await supabase.auth.getUser();
-        
+        const {
+            data: { user },
+            error
+        } = await supabase.auth.getUser();
+
         if (error || !user) {
             window.location.href = '/auth.html';
             return;
@@ -72,7 +75,9 @@ async function loadUsers() {
             .select('*')
             .order('created_at', { ascending: false });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         users = data;
         renderUsers();
@@ -89,15 +94,18 @@ function renderUsers() {
 
     users.forEach(user => {
         const row = document.createElement('tr');
-        
+
         // Determinar status baseado no nome
         let status = 'active';
-        if (user.name && user.name.includes('[BLOQUEADO]')) status = 'blocked';
-        else if (user.name && user.name.includes('[PAUSADO]')) status = 'paused';
-        
-        const statusClass = status === 'active' ? 'success' : 
-                           status === 'paused' ? 'warning' : 'danger';
-        
+        if (user.name && user.name.includes('[BLOQUEADO]')) {
+            status = 'blocked';
+        } else if (user.name && user.name.includes('[PAUSADO]')) {
+            status = 'paused';
+        }
+
+        const statusClass =
+            status === 'active' ? 'success' : status === 'paused' ? 'warning' : 'danger';
+
         row.innerHTML = `
             <td>${user.email}</td>
             <td>${user.name || 'N/A'}</td>
@@ -107,14 +115,15 @@ function renderUsers() {
             <td>${user.last_login ? new Date(user.last_login).toLocaleString('pt-BR') : 'Nunca'}</td>
             <td>
                 <div class="btn-group" role="group">
-                    ${status === 'active' ? 
-                        `<button class="btn btn-sm btn-warning" onclick="pauseUser('${user.id}')">Pausar</button>
-                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>` :
-                        status === 'paused' ?
-                        `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Ativar</button>
-                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>` :
-                        `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Desbloquear</button>`
-                    }
+                    ${
+    status === 'active'
+        ? `<button class="btn btn-sm btn-warning" onclick="pauseUser('${user.id}')">Pausar</button>
+                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>`
+        : status === 'paused'
+            ? `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Ativar</button>
+                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>`
+            : `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Desbloquear</button>`
+}
                     <button class="btn btn-sm btn-info" onclick="forceLogout('${user.id}')">Desconectar</button>
                     ${user.role !== 'admin' ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}')">Excluir</button>` : ''}
                 </div>
@@ -136,7 +145,9 @@ async function loadActiveSessions() {
             .order('last_login', { ascending: false })
             .limit(20);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         // Simular sessões ativas baseado no último login
         activeSessions = data.map(user => ({
@@ -147,7 +158,7 @@ async function loadActiveSessions() {
             created_at: user.last_login,
             last_activity: user.last_login
         }));
-        
+
         renderActiveSessions();
     } catch (error) {
         console.error('Erro ao carregar sessões ativas:', error);
@@ -191,7 +202,7 @@ async function loadAdminActions() {
                 reason: 'Acesso ao painel administrativo'
             }
         ];
-        
+
         renderAdminActions();
     } catch (error) {
         console.error('Erro ao carregar ações administrativas:', error);
@@ -221,16 +232,23 @@ function renderAdminActions() {
 async function pauseUser(userId) {
     try {
         const user = users.find(u => u.id === userId);
-        if (!user) throw new Error('Usuário não encontrado');
-        
-        const newName = user.name && user.name.includes('[PAUSADO]') ? user.name : `${user.name || user.email} [PAUSADO]`;
-        
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        const newName =
+            user.name && user.name.includes('[PAUSADO]')
+                ? user.name
+                : `${user.name || user.email} [PAUSADO]`;
+
         const { error } = await supabase
             .from('user_profiles')
             .update({ name: newName })
             .eq('id', userId);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         showAlert('Usuário pausado com sucesso', 'success');
         await loadUsers();
@@ -243,20 +261,29 @@ async function pauseUser(userId) {
 // Bloquear usuário (simulado - adiciona comentário no nome)
 async function blockUser(userId) {
     const reason = prompt('Motivo para bloquear o usuário:');
-    if (!reason) return;
-    
+    if (!reason) {
+        return;
+    }
+
     try {
         const user = users.find(u => u.id === userId);
-        if (!user) throw new Error('Usuário não encontrado');
-        
-        const newName = user.name && user.name.includes('[BLOQUEADO]') ? user.name : `${user.name || user.email} [BLOQUEADO]`;
-        
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
+
+        const newName =
+            user.name && user.name.includes('[BLOQUEADO]')
+                ? user.name
+                : `${user.name || user.email} [BLOQUEADO]`;
+
         const { error } = await supabase
             .from('user_profiles')
             .update({ name: newName })
             .eq('id', userId);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         showAlert(`Usuário bloqueado com sucesso. Motivo: ${reason}`, 'success');
         loadUsers();
@@ -270,17 +297,24 @@ async function blockUser(userId) {
 async function unblockUser(userId) {
     try {
         const user = users.find(u => u.id === userId);
-        if (!user) throw new Error('Usuário não encontrado');
-        
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
+
         let newName = user.name || user.email;
-        newName = newName.replace(/\s*\[BLOQUEADO\]/g, '').replace(/\s*\[PAUSADO\]/g, '').trim();
-        
+        newName = newName
+            .replace(/\s*\[BLOQUEADO\]/g, '')
+            .replace(/\s*\[PAUSADO\]/g, '')
+            .trim();
+
         const { error } = await supabase
             .from('user_profiles')
             .update({ name: newName })
             .eq('id', userId);
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
 
         showAlert('Usuário desbloqueado com sucesso', 'success');
         loadUsers();
@@ -295,10 +329,12 @@ async function forceLogout(userId) {
     if (!confirm('Tem certeza que deseja desconectar este usuário?')) {
         return;
     }
-    
+
     try {
         const user = users.find(u => u.id === userId);
-        if (!user) throw new Error('Usuário não encontrado');
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
 
         showAlert(`Logout forçado simulado para ${user.email}`, 'warning');
         await loadActiveSessions();
@@ -313,10 +349,12 @@ async function terminateSession(sessionId) {
     if (!confirm('Tem certeza que deseja terminar esta sessão?')) {
         return;
     }
-    
+
     try {
         const session = activeSessions.find(s => s.id === sessionId);
-        if (!session) throw new Error('Sessão não encontrada');
+        if (!session) {
+            throw new Error('Sessão não encontrada');
+        }
 
         showAlert(`Sessão terminada para ${session.user_profiles.email}`, 'warning');
         await loadActiveSessions();
@@ -333,22 +371,25 @@ async function deleteUser(userId) {
         alert('É obrigatório informar o motivo da exclusão.');
         return;
     }
-    
-    if (!confirm('ATENÇÃO: Esta ação é irreversível! Tem certeza que deseja deletar este usuário?')) {
+
+    if (
+        !confirm('ATENÇÃO: Esta ação é irreversível! Tem certeza que deseja deletar este usuário?')
+    ) {
         return;
     }
-    
+
     try {
         const user = users.find(u => u.id === userId);
-        if (!user) throw new Error('Usuário não encontrado');
-        
-        // Deletar o usuário
-        const { error } = await supabase
-            .from('user_profiles')
-            .delete()
-            .eq('id', userId);
+        if (!user) {
+            throw new Error('Usuário não encontrado');
+        }
 
-        if (error) throw error;
+        // Deletar o usuário
+        const { error } = await supabase.from('user_profiles').delete().eq('id', userId);
+
+        if (error) {
+            throw error;
+        }
 
         showAlert(`Usuário ${user.email} deletado com sucesso. Motivo: ${reason}`, 'success');
         loadUsers();
@@ -384,9 +425,9 @@ function renderFilteredUsers(filteredUsers) {
 
     filteredUsers.forEach(user => {
         const row = document.createElement('tr');
-        const statusClass = user.status === 'active' ? 'success' : 
-                           user.status === 'paused' ? 'warning' : 'danger';
-        
+        const statusClass =
+            user.status === 'active' ? 'success' : user.status === 'paused' ? 'warning' : 'danger';
+
         row.innerHTML = `
             <td>${user.email}</td>
             <td>${user.name || 'N/A'}</td>
@@ -396,14 +437,15 @@ function renderFilteredUsers(filteredUsers) {
             <td>${user.last_login ? new Date(user.last_login).toLocaleString('pt-BR') : 'Nunca'}</td>
             <td>
                 <div class="btn-group" role="group">
-                    ${user.status === 'active' ? 
-                        `<button class="btn btn-sm btn-warning" onclick="pauseUser('${user.id}')">Pausar</button>
-                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>` :
-                        user.status === 'paused' ?
-                        `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Ativar</button>
-                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>` :
-                        `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Desbloquear</button>`
-                    }
+                    ${
+    user.status === 'active'
+        ? `<button class="btn btn-sm btn-warning" onclick="pauseUser('${user.id}')">Pausar</button>
+                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>`
+        : user.status === 'paused'
+            ? `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Ativar</button>
+                         <button class="btn btn-sm btn-danger" onclick="blockUser('${user.id}')">Bloquear</button>`
+            : `<button class="btn btn-sm btn-success" onclick="unblockUser('${user.id}')">Desbloquear</button>`
+}
                     <button class="btn btn-sm btn-info" onclick="forceLogout('${user.id}')">Desconectar</button>
                     ${user.role !== 'admin' ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteUser('${user.id}')">Excluir</button>` : ''}
                 </div>
@@ -420,16 +462,16 @@ function showAlert(message, type = 'info') {
         console.error('Container de alertas não encontrado');
         return;
     }
-    
+
     const alert = document.createElement('div');
     alert.className = `alert alert-${type} alert-dismissible fade show`;
     alert.innerHTML = `
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
+
     alertContainer.appendChild(alert);
-    
+
     // Auto-remover após 5 segundos
     setTimeout(() => {
         if (alert.parentNode) {
@@ -439,12 +481,12 @@ function showAlert(message, type = 'info') {
 }
 
 // Atualização automática a cada 30 segundos
-setInterval(async () => {
+setInterval(async() => {
     await loadActiveSessions();
 }, 30000);
 
 // Cleanup de sessões expiradas a cada 5 minutos
-setInterval(async () => {
+setInterval(async() => {
     try {
         await supabase.rpc('cleanup_expired_sessions');
     } catch (error) {
@@ -466,11 +508,8 @@ async function loadGroups() {
             console.error('Cliente Supabase não disponível');
             throw new Error('Cliente Supabase não disponível');
         }
-        
-        const { data, error } = await supabase
-            .from('atalhos')
-            .select('grupo')
-            .order('grupo');
+
+        const { data, error } = await supabase.from('atalhos').select('grupo').order('grupo');
 
         if (error) {
             console.error('Erro na query de grupos:', error);
@@ -482,7 +521,7 @@ async function loadGroups() {
         // Extrair grupos únicos
         const uniqueGroups = [...new Set(data.map(item => item.grupo))];
         console.log('Grupos únicos encontrados:', uniqueGroups);
-        
+
         groups = uniqueGroups.map((grupo, index) => ({
             id: grupo,
             name: grupo.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
@@ -501,19 +540,18 @@ async function loadGroups() {
 
 // Carregar atalhos
 async function loadShortcuts(groupFilter = '') {
-    console.log('Iniciando carregamento de atalhos...', groupFilter ? `Filtro: ${groupFilter}` : 'Sem filtro');
+    console.log(
+        'Iniciando carregamento de atalhos...',
+        groupFilter ? `Filtro: ${groupFilter}` : 'Sem filtro'
+    );
     try {
         const supabase = getSupabaseClient();
         if (!supabase) {
             console.error('Cliente Supabase não disponível');
             throw new Error('Cliente Supabase não disponível');
         }
-        
-        let query = supabase
-            .from('atalhos')
-            .select('*')
-            .order('grupo')
-            .order('ordem');
+
+        let query = supabase.from('atalhos').select('*').order('grupo').order('ordem');
 
         if (groupFilter) {
             query = query.eq('grupo', groupFilter);
@@ -540,14 +578,18 @@ async function loadShortcuts(groupFilter = '') {
 // Renderizar lista de grupos
 function renderGroups() {
     const container = document.getElementById('groups-list');
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
     if (groups.length === 0) {
         container.innerHTML = '<div class="text-center text-muted">Nenhum grupo encontrado</div>';
         return;
     }
 
-    container.innerHTML = groups.map(group => `
+    container.innerHTML = groups
+        .map(
+            group => `
         <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
             <div>
                 <strong>${group.name}</strong>
@@ -563,20 +605,26 @@ function renderGroups() {
                 </button>
             </div>
         </div>
-    `).join('');
+    `
+        )
+        .join('');
 }
 
 // Renderizar lista de atalhos
 function renderShortcuts() {
     const container = document.getElementById('shortcuts-list');
-    if (!container) return;
+    if (!container) {
+        return;
+    }
 
     if (shortcuts.length === 0) {
         container.innerHTML = '<div class="text-center text-muted">Nenhum atalho encontrado</div>';
         return;
     }
 
-    container.innerHTML = shortcuts.map(shortcut => `
+    container.innerHTML = shortcuts
+        .map(
+            shortcut => `
         <div class="d-flex justify-content-between align-items-center p-2 border-bottom">
             <div class="flex-grow-1">
                 <div class="d-flex align-items-center">
@@ -600,21 +648,27 @@ function renderShortcuts() {
                 </button>
             </div>
         </div>
-    `).join('');
+    `
+        )
+        .join('');
 }
 
 // Atualizar selects de grupos
 function updateGroupSelects() {
     const selects = ['group-filter', 'shortcutGroup'];
-    
+
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
-        if (!select) return;
+        if (!select) {
+            return;
+        }
 
         // Manter a primeira opção
         const firstOption = select.querySelector('option');
         select.innerHTML = '';
-        if (firstOption) select.appendChild(firstOption);
+        if (firstOption) {
+            select.appendChild(firstOption);
+        }
 
         // Adicionar grupos
         groups.forEach(group => {
@@ -631,9 +685,9 @@ function showGroupModal(groupKey = null) {
     const modal = new bootstrap.Modal(document.getElementById('groupModal'));
     const title = document.getElementById('groupModalTitle');
     const form = document.getElementById('groupForm');
-    
+
     form.reset();
-    
+
     if (groupKey) {
         const group = groups.find(g => g.key === groupKey);
         if (group) {
@@ -646,7 +700,7 @@ function showGroupModal(groupKey = null) {
     } else {
         title.textContent = 'Novo Grupo';
     }
-    
+
     modal.show();
 }
 
@@ -668,7 +722,7 @@ async function saveGroup() {
         if (!supabase) {
             throw new Error('Cliente Supabase não disponível');
         }
-        
+
         if (groupId) {
             // Editar: atualizar todos os atalhos do grupo antigo
             const { error } = await supabase
@@ -676,7 +730,9 @@ async function saveGroup() {
                 .update({ grupo: groupKey })
                 .eq('grupo', groupId);
 
-            if (error) throw error;
+            if (error) {
+                throw error;
+            }
             showAlert('Grupo atualizado com sucesso', 'success');
         } else {
             // Novo grupo: apenas validar se a chave não existe
@@ -690,7 +746,7 @@ async function saveGroup() {
                 showAlert('Já existe um grupo com esta chave', 'warning');
                 return;
             }
-            
+
             showAlert('Grupo criado. Adicione atalhos para este grupo.', 'success');
         }
 
@@ -705,7 +761,11 @@ async function saveGroup() {
 
 // Deletar grupo
 async function deleteGroup(groupKey) {
-    if (!confirm(`Tem certeza que deseja deletar o grupo "${groupKey}"? Todos os atalhos deste grupo também serão removidos.`)) {
+    if (
+        !confirm(
+            `Tem certeza que deseja deletar o grupo "${groupKey}"? Todos os atalhos deste grupo também serão removidos.`
+        )
+    ) {
         return;
     }
 
@@ -714,13 +774,12 @@ async function deleteGroup(groupKey) {
         if (!supabase) {
             throw new Error('Cliente Supabase não disponível');
         }
-        
-        const { error } = await supabase
-            .from('atalhos')
-            .delete()
-            .eq('grupo', groupKey);
 
-        if (error) throw error;
+        const { error } = await supabase.from('atalhos').delete().eq('grupo', groupKey);
+
+        if (error) {
+            throw error;
+        }
 
         showAlert('Grupo e seus atalhos deletados com sucesso', 'success');
         await loadGroups();
@@ -736,10 +795,10 @@ function showShortcutModal(shortcutId = null) {
     const modal = new bootstrap.Modal(document.getElementById('shortcutModal'));
     const title = document.getElementById('shortcutModalTitle');
     const form = document.getElementById('shortcutForm');
-    
+
     form.reset();
     document.getElementById('shortcutActive').checked = true;
-    
+
     if (shortcutId) {
         const shortcut = shortcuts.find(s => s.id === shortcutId);
         if (shortcut) {
@@ -756,7 +815,7 @@ function showShortcutModal(shortcutId = null) {
     } else {
         title.textContent = 'Novo Atalho';
     }
-    
+
     modal.show();
 }
 
@@ -784,20 +843,17 @@ async function saveShortcut() {
         if (!supabase) {
             throw new Error('Cliente Supabase não disponível');
         }
-        
+
         let result;
         if (shortcutId) {
-            result = await supabase
-                .from('atalhos')
-                .update(shortcutData)
-                .eq('id', shortcutId);
+            result = await supabase.from('atalhos').update(shortcutData).eq('id', shortcutId);
         } else {
-            result = await supabase
-                .from('atalhos')
-                .insert([shortcutData]);
+            result = await supabase.from('atalhos').insert([shortcutData]);
         }
 
-        if (result.error) throw result.error;
+        if (result.error) {
+            throw result.error;
+        }
 
         showAlert(`Atalho ${shortcutId ? 'atualizado' : 'criado'} com sucesso`, 'success');
         bootstrap.Modal.getInstance(document.getElementById('shortcutModal')).hide();
@@ -812,7 +868,9 @@ async function saveShortcut() {
 // Deletar atalho
 async function deleteShortcut(shortcutId) {
     const shortcut = shortcuts.find(s => s.id === shortcutId);
-    if (!shortcut) return;
+    if (!shortcut) {
+        return;
+    }
 
     if (!confirm(`Tem certeza que deseja deletar o atalho "${shortcut.titulo}"?`)) {
         return;
@@ -823,13 +881,12 @@ async function deleteShortcut(shortcutId) {
         if (!supabase) {
             throw new Error('Cliente Supabase não disponível');
         }
-        
-        const { error } = await supabase
-            .from('atalhos')
-            .delete()
-            .eq('id', shortcutId);
 
-        if (error) throw error;
+        const { error } = await supabase.from('atalhos').delete().eq('id', shortcutId);
+
+        if (error) {
+            throw error;
+        }
 
         showAlert('Atalho deletado com sucesso', 'success');
         await loadShortcuts();
@@ -868,7 +925,7 @@ function setupShortcutEventListeners() {
     // Filtro de grupos
     const groupFilter = document.getElementById('group-filter');
     if (groupFilter) {
-        groupFilter.addEventListener('change', (e) => {
+        groupFilter.addEventListener('change', e => {
             loadShortcuts(e.target.value);
         });
     }
@@ -877,8 +934,9 @@ function setupShortcutEventListeners() {
     const groupNameInput = document.getElementById('groupName');
     const groupKeyInput = document.getElementById('groupKey');
     if (groupNameInput && groupKeyInput) {
-        groupNameInput.addEventListener('input', (e) => {
-            if (!document.getElementById('groupId').value) { // Apenas para novos grupos
+        groupNameInput.addEventListener('input', e => {
+            if (!document.getElementById('groupId').value) {
+                // Apenas para novos grupos
                 const key = e.target.value
                     .toLowerCase()
                     .replace(/[^a-z0-9\s-]/g, '')
@@ -892,15 +950,15 @@ function setupShortcutEventListeners() {
 }
 
 // Funções globais para os botões
-window.editGroup = (groupKey) => showGroupModal(groupKey);
+window.editGroup = groupKey => showGroupModal(groupKey);
 window.deleteGroup = deleteGroup;
-window.editShortcut = (shortcutId) => showShortcutModal(shortcutId);
+window.editShortcut = shortcutId => showShortcutModal(shortcutId);
 window.deleteShortcut = deleteShortcut;
 
 // Carregar dados de atalhos quando a aba for ativada
 document.addEventListener('DOMContentLoaded', () => {
     setupShortcutEventListeners();
-    
+
     // Carregar dados quando a aba de atalhos for ativada
     const shortcutsTab = document.getElementById('shortcuts-tab');
     if (shortcutsTab) {
@@ -909,7 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadGroups();
             loadShortcuts();
         });
-        
+
         // Também carregar dados se a aba já estiver ativa
         shortcutsTab.addEventListener('click', () => {
             setTimeout(() => {
@@ -921,7 +979,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         });
     }
-    
+
     // Carregar dados imediatamente se estivermos na página admin
     if (window.location.pathname.includes('admin.html')) {
         console.log('Página admin carregada, preparando dados de atalhos...');
@@ -945,7 +1003,7 @@ window.loadShortcutData = () => {
 };
 
 // Função de teste para verificar conexão com Supabase
-window.testSupabaseConnection = async () => {
+window.testSupabaseConnection = async() => {
     console.log('Testando conexão com Supabase...');
     try {
         // Testar se o cliente Supabase está disponível
@@ -953,24 +1011,24 @@ window.testSupabaseConnection = async () => {
             console.error('Cliente Supabase não encontrado!');
             return;
         }
-        
+
         console.log('Cliente Supabase encontrado:', window.supabase);
-        
+
         // Testar query simples na tabela atalhos
         const { data, error, count } = await window.supabase
             .from('atalhos')
             .select('*', { count: 'exact' })
             .limit(5);
-            
+
         if (error) {
             console.error('Erro na query de teste:', error);
             return;
         }
-        
+
         console.log('Teste de conexão bem-sucedido!');
         console.log('Total de atalhos na tabela:', count);
         console.log('Primeiros 5 atalhos:', data);
-        
+
         return { success: true, count, data };
     } catch (error) {
         console.error('Erro no teste de conexão:', error);
