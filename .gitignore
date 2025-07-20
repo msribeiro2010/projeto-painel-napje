@@ -72,3 +72,4 @@ Users/
 # Arquivos de configuração local
 config.local.js
 settings.local.json
+.vercel

@@ -81,6 +81,7 @@ async function loadUsers() {
 
         users = data;
         renderUsers();
+        updateDashboardStats();
     } catch (error) {
         console.error('Erro ao carregar usuários:', error);
         showAlert('Erro ao carregar usuários', 'danger');
@@ -133,33 +134,57 @@ function renderUsers() {
     });
 }
 
-// Carregar sessões ativas (simulado com dados dos usuários logados)
+// Carregar sessões ativas da tabela active_sessions
 async function loadActiveSessions() {
     try {
         const supabase = getSupabaseClient();
-        // Como não temos a tabela user_sessions ainda, vamos simular com usuários ativos
-        const { data, error } = await supabase
-            .from('user_profiles')
-            .select('*')
-            .not('last_login', 'is', null)
-            .order('last_login', { ascending: false })
-            .limit(20);
 
-        if (error) {
-            throw error;
+        // Buscar sessões ativas da tabela active_sessions
+        const { data: sessionsData, error: sessionsError } = await supabase
+            .from('active_sessions')
+            .select('*')
+            .order('last_activity', { ascending: false });
+
+        if (sessionsError) {
+            console.log('Tabela active_sessions não encontrada, usando fallback para user_profiles');
+            // Fallback para user_profiles se a tabela active_sessions não existir
+            const { data, error } = await supabase
+                .from('user_profiles')
+                .select('*')
+                .not('last_login', 'is', null)
+                .order('last_login', { ascending: false })
+                .limit(20);
+
+            if (error) {
+                throw error;
+            }
+
+            // Simular sessões ativas baseado no último login (últimas 24 horas)
+            const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            activeSessions = data
+                .filter(user => user.last_login && user.last_login > oneDayAgo)
+                .map(user => ({
+                    id: user.id,
+                    user_profiles: { email: user.email, name: user.name },
+                    ip_address: 'N/A',
+                    user_agent: 'N/A',
+                    created_at: user.last_login,
+                    last_activity: user.last_login
+                }));
+        } else {
+            // Usar dados reais da tabela active_sessions
+            activeSessions = sessionsData.map(session => ({
+                id: session.session_id,
+                user_profiles: { email: session.username, name: session.username },
+                ip_address: session.ip_address || 'N/A',
+                user_agent: session.user_agent || 'N/A',
+                created_at: session.created_at,
+                last_activity: session.last_activity
+            }));
         }
 
-        // Simular sessões ativas baseado no último login
-        activeSessions = data.map(user => ({
-            id: user.id,
-            user_profiles: { email: user.email, name: user.name },
-            ip_address: 'N/A',
-            user_agent: 'N/A',
-            created_at: user.last_login,
-            last_activity: user.last_login
-        }));
-
         renderActiveSessions();
+        updateDashboardStats();
     } catch (error) {
         console.error('Erro ao carregar sessões ativas:', error);
         showAlert('Erro ao carregar sessões ativas', 'danger');
@@ -453,6 +478,42 @@ function renderFilteredUsers(filteredUsers) {
         `;
         tbody.appendChild(row);
     });
+}
+
+// Atualizar estatísticas do dashboard
+function updateDashboardStats() {
+    try {
+        // Total de usuários
+        const totalUsers = users.length;
+        const totalUsersElement = document.getElementById('total-users');
+        if (totalUsersElement) {
+            totalUsersElement.textContent = totalUsers;
+        }
+
+        // Usuários bloqueados (contém [BLOQUEADO] no nome)
+        const blockedUsers = users.filter(user =>
+            user.name && user.name.includes('[BLOQUEADO]')
+        ).length;
+        const blockedUsersElement = document.getElementById('blocked-users');
+        if (blockedUsersElement) {
+            blockedUsersElement.textContent = blockedUsers;
+        }
+
+        // Sessões ativas
+        const activeSessionsCount = activeSessions.length;
+        const activeSessionsElement = document.getElementById('active-sessions');
+        if (activeSessionsElement) {
+            activeSessionsElement.textContent = activeSessionsCount;
+        }
+
+        console.log('📊 Estatísticas atualizadas:', {
+            totalUsers,
+            blockedUsers,
+            activeSessionsCount
+        });
+    } catch (error) {
+        console.error('Erro ao atualizar estatísticas:', error);
+    }
 }
 
 // Mostrar alerta

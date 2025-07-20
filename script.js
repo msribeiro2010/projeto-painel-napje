@@ -339,6 +339,7 @@ async function logout() {
 const { userId, username } = registerWebUser();
 updateActiveUsers();
 registerUserActivity();
+initializeSessionCleanup();
 
 // Atualiza a lista de usuários web a cada 30 segundos
 setInterval(updateActiveUsers, 30000);
@@ -1509,6 +1510,69 @@ function registerWebUser() {
     return { userId, username };
 }
 
+// Função para sincronizar sessão ativa com Supabase
+async function syncActiveSessionWithSupabase() {
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            console.log('Supabase não disponível para sincronização');
+            return;
+        }
+
+        const userId = localStorage.getItem('userId');
+        const username = localStorage.getItem('username');
+
+        if (!userId || !username) {
+            return;
+        }
+
+        const now = new Date().toISOString();
+
+        // Tenta inserir ou atualizar a sessão ativa
+        const { error } = await supabase
+            .from('active_sessions')
+            .upsert({
+                session_id: userId,
+                username: username,
+                last_activity: now,
+                user_agent: navigator.userAgent,
+                ip_address: 'web_user'
+            }, {
+                onConflict: 'session_id'
+            });
+
+        if (error) {
+            console.error('Erro ao sincronizar sessão:', error);
+        }
+    } catch (error) {
+        console.error('Erro na sincronização com Supabase:', error);
+    }
+}
+
+// Função para limpar sessões expiradas no Supabase
+async function cleanupExpiredSessions() {
+    try {
+        const supabase = getSupabaseClient();
+        if (!supabase) {
+            return;
+        }
+
+        // Remove sessões com mais de 5 minutos de inatividade
+        const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+
+        const { error } = await supabase
+            .from('active_sessions')
+            .delete()
+            .lt('last_activity', fiveMinutesAgo);
+
+        if (error) {
+            console.error('Erro ao limpar sessões expiradas:', error);
+        }
+    } catch (error) {
+        console.error('Erro na limpeza de sessões:', error);
+    }
+}
+
 // Função para atualizar usuários ativos
 function updateActiveUsers() {
     const now = Date.now();
@@ -1529,6 +1593,9 @@ function updateActiveUsers() {
 
     localStorage.setItem('activeUsers', JSON.stringify(activeUsers));
     displayWebUsers(activeUsers);
+
+    // Sincroniza com Supabase
+    syncActiveSessionWithSupabase();
 }
 
 // Função para exibir usuários web
@@ -1580,7 +1647,32 @@ function registerUserActivity() {
             if (activeUsers[userId]) {
                 activeUsers[userId].lastActive = Date.now();
                 localStorage.setItem('activeUsers', JSON.stringify(activeUsers));
+                // Sincroniza atividade com Supabase
+                syncActiveSessionWithSupabase();
             }
         });
+    });
+}
+
+// Inicializar limpeza automática de sessões
+function initializeSessionCleanup() {
+    // Limpa sessões expiradas a cada 2 minutos
+    setInterval(cleanupExpiredSessions, 2 * 60 * 1000);
+
+    // Limpa sessão ao sair da página
+    window.addEventListener('beforeunload', async() => {
+        try {
+            const supabase = getSupabaseClient();
+            const userId = localStorage.getItem('userId');
+
+            if (supabase && userId) {
+                await supabase
+                    .from('active_sessions')
+                    .delete()
+                    .eq('session_id', userId);
+            }
+        } catch (error) {
+            console.error('Erro ao limpar sessão:', error);
+        }
     });
 }
