@@ -1,0 +1,74 @@
+# Arquivos de ambiente
+.env
+.env.local
+.env.production
+.env.development
+
+# Dependências
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+
+# Arquivos temporários
+.tmp/
+.cache/
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+dist/
+build/
+.next/
+.nuxt/
+
+# Arquivos de teste
+test-*.html
+test-*.js
+*.test.js
+*.spec.js
+
+# Documentação de desenvolvimento
+*.md.backup
+DOCS/
+docs/development/
+
+# Scripts de setup/debug
+setup-*.js
+debug-*.js
+verificar-*.js
+diagnostico-*.js
+
+# Arquivos SQL temporários
+*.sql.backup
+fix-*.sql
+corrigir-*.sql
+adicionar-*.sql
+
+# Backups
+*.backup
+*.bak
+*.old
+
+# Arquivos específicos do projeto
+scripts/
+Users/
+
+# Certificados e chaves
+*.pem
+*.key
+*.cert
+
+# Arquivos de configuração local
+config.local.js
+settings.local.json

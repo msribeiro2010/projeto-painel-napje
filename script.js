@@ -199,119 +199,241 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar o relógio do Windows
     updateWindowsClock();
     
+    // Verificar autenticação
+    checkAuthentication();
+    
     // Atualizar o relógio a cada minuto
     setInterval(updateWindowsClock, 60000);
+});
 
-    // Inicializa o sistema de usuários web
-    const { userId, username } = registerWebUser();
-    updateActiveUsers();
-    registerUserActivity();
-    
-    // Atualiza a lista de usuários web a cada 30 segundos
-    setInterval(updateActiveUsers, 30000);
-    
-    console.log(`Usuário web registrado: ${username} (${userId})`);
+// Verificar autenticação do usuário
+// Função para obter o cliente Supabase
+function getSupabaseClient() {
+    return window.supabaseClient;
+}
 
-    // Funcionalidade de toggle para o container de grupos
-    const toggleButton = document.getElementById('toggle-groups');
-    const groupsContainer = document.getElementById('groups-container');
-    
-    if (toggleButton && groupsContainer) {
-        toggleButton.addEventListener('click', function() {
-            const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
-            
-            // Atualiza o estado do botão
-            toggleButton.setAttribute('aria-expanded', !isExpanded);
-            
-            // Toggle da classe no container
-            groupsContainer.classList.toggle('collapsed');
-            
-            // Salva o estado no localStorage
-            localStorage.setItem('groupsContainerState', !isExpanded ? 'expanded' : 'collapsed');
-        });
+// Função para aguardar o Supabase estar disponível
+function waitForSupabase() {
+    return new Promise((resolve) => {
+        if (window.supabaseClient) {
+            resolve(window.supabaseClient);
+        } else {
+            setTimeout(() => {
+                waitForSupabase().then(resolve);
+            }, 100);
+        }
+    });
+}
+
+async function checkAuthentication() {
+    try {
+        // Verificar se o Supabase está disponível
+        if (typeof window.supabaseClient === 'undefined') {
+            console.log('Supabase não carregado ainda, aguardando...');
+            setTimeout(checkAuthentication, 1000);
+            return;
+        }
         
-        // Restaura o estado salvo
-        const savedState = localStorage.getItem('groupsContainerState');
-        if (savedState === 'collapsed') {
-            toggleButton.setAttribute('aria-expanded', 'false');
-            groupsContainer.classList.add('collapsed');
+        const supabase = getSupabaseClient();
+        const { data: { user }, error } = await supabase.auth.getUser();
+        
+        if (user && !error) {
+            // Usuário autenticado
+            showAuthenticatedState(user);
+        } else {
+            // Usuário não autenticado
+            showUnauthenticatedState();
         }
+    } catch (error) {
+        console.log('Erro ao verificar autenticação:', error);
+        showUnauthenticatedState();
     }
+}
 
-    // Função para exibir uma saudação com base na hora do dia
-    const greetingElement = document.getElementById('greeting-message');
-    const now = new Date();
-    const hours = now.getHours();
-    let greeting = '';
-
-    if (hours >= 5 && hours < 12) {
-        greeting = 'Bom dia';
-    } else if (hours >= 12 && hours < 18) {
-        greeting = 'Boa tarde';
-    } else {
-        greeting = 'Boa noite';
+// Mostrar estado autenticado
+function showAuthenticatedState(user) {
+    const loginBtn = document.querySelector('a[href="auth.html"]');
+    const settingsBtn = document.getElementById('settings-btn');
+    
+    if (loginBtn) {
+        loginBtn.style.display = 'none';
     }
-
-    greetingElement.textContent = `${greeting}, tenha um ótimo trabalho!`;
-
-    // Sistema Info Tooltip
-    const systemIcon = document.getElementById('system-info-icon');
-    const tooltip = document.getElementById('system-info-tooltip');
-    let isTooltipVisible = false;
-
-    if (systemIcon && tooltip) {
-        systemIcon.addEventListener('click', function(e) {
-            e.stopPropagation();
-            isTooltipVisible = !isTooltipVisible;
-            tooltip.classList.toggle('show', isTooltipVisible);
-        });
-
-        // Fechar tooltip ao clicar fora
-        document.addEventListener('click', function(e) {
-            if (!tooltip.contains(e.target) && !systemIcon.contains(e.target)) {
-                isTooltipVisible = false;
-                tooltip.classList.remove('show');
-            }
-        });
-
-        // Fechar tooltip ao pressionar ESC
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape' && isTooltipVisible) {
-                isTooltipVisible = false;
-                tooltip.classList.remove('show');
-            }
-        });
+    
+    if (settingsBtn) {
+        settingsBtn.style.display = 'inline-block';
     }
+    
+    // Adicionar botão de logout
+    addLogoutButton();
+}
 
-    // Contador de cliques para botões de atalho
-    const buttons = document.querySelectorAll('.button-container button');
+// Mostrar estado não autenticado
+function showUnauthenticatedState() {
+    const loginBtn = document.querySelector('a[href="auth.html"]');
+    const settingsBtn = document.getElementById('settings-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    
+    if (loginBtn) {
+        loginBtn.style.display = 'inline-block';
+    }
+    
+    if (settingsBtn) {
+        settingsBtn.style.display = 'none';
+    }
+    
+    if (logoutBtn) {
+        logoutBtn.remove();
+    }
+    
+    // Redirecionar automaticamente para a tela de login
+    console.log('Usuário não autenticado, redirecionando para login...');
+    window.location.href = 'auth.html';
+}
 
-    buttons.forEach((btn, idx) => {
-        let btnId = btn.textContent.trim() + '_' + idx;
-        btnId = btnId.replace(/\s+/g, '_').replace(/[^\w\d_]/g, '');
-        const counterSpan = btn.querySelector('.click-counter');
-        if (!counterSpan) return;
+// Adicionar botão de logout
+function addLogoutButton() {
+    const authButtons = document.querySelector('.auth-buttons');
+    let logoutBtn = document.getElementById('logout-btn');
+    
+    if (!logoutBtn && authButtons) {
+        logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logout-btn';
+        logoutBtn.className = 'btn btn-outline-light btn-sm';
+        logoutBtn.title = 'Sair';
+        logoutBtn.innerHTML = '<i class="bi bi-box-arrow-right"></i>';
+        logoutBtn.onclick = logout;
+        
+        authButtons.appendChild(logoutBtn);
+    }
+}
 
-        let count = parseInt(localStorage.getItem('btnClick_' + btnId)) || 0;
-        counterSpan.textContent = count > 0 ? count : '';
-        counterSpan.style.display = count > 0 ? 'flex' : 'none';
-        btn.style.position = 'relative';
-        if (btn.lastElementChild !== counterSpan) {
-            btn.appendChild(counterSpan);
+// Função de logout
+async function logout() {
+    try {
+        if (typeof window.supabaseClient !== 'undefined') {
+            const supabase = getSupabaseClient();
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
         }
-        btn.addEventListener('click', function(e) {
-            count = parseInt(localStorage.getItem('btnClick_' + btnId)) || 0;
-            count++;
-            localStorage.setItem('btnClick_' + btnId, count);
-            counterSpan.textContent = count;
-            counterSpan.style.display = count > 0 ? 'flex' : 'none';
-            if (count > 3 && !isFavorite(btn)) {
-                toggleFavorite(btn);
-            }
-        });
+        
+        showUnauthenticatedState();
+        
+        // Opcional: recarregar a página para limpar dados
+        // window.location.reload();
+        
+    } catch (error) {
+        console.error('Erro ao fazer logout:', error);
+        alert('Erro ao fazer logout. Tente novamente.');
+    }
+}
+
+// Inicializa o sistema de usuários web
+const { userId, username } = registerWebUser();
+updateActiveUsers();
+registerUserActivity();
+
+// Atualiza a lista de usuários web a cada 30 segundos
+setInterval(updateActiveUsers, 30000);
+
+console.log(`Usuário web registrado: ${username} (${userId})`);
+
+// Funcionalidade de toggle para o container de grupos
+const toggleButton = document.getElementById('toggle-groups');
+const groupsContainer = document.getElementById('groups-container');
+
+if (toggleButton && groupsContainer) {
+    toggleButton.addEventListener('click', function() {
+        const isExpanded = toggleButton.getAttribute('aria-expanded') === 'true';
+        
+        // Atualiza o estado do botão
+        toggleButton.setAttribute('aria-expanded', !isExpanded);
+        
+        // Toggle da classe no container
+        groupsContainer.classList.toggle('collapsed');
+        
+        // Salva o estado no localStorage
+        localStorage.setItem('groupsContainerState', !isExpanded ? 'expanded' : 'collapsed');
+    });
+    
+    // Restaura o estado salvo
+    const savedState = localStorage.getItem('groupsContainerState');
+    if (savedState === 'collapsed') {
+        toggleButton.setAttribute('aria-expanded', 'false');
+        groupsContainer.classList.add('collapsed');
+    }
+}
+
+// Função para exibir uma saudação com base na hora do dia
+const greetingElement = document.getElementById('greeting-message');
+const now = new Date();
+const hours = now.getHours();
+let greeting = '';
+
+if (hours >= 5 && hours < 12) {
+    greeting = 'Bom dia';
+} else if (hours >= 12 && hours < 18) {
+    greeting = 'Boa tarde';
+} else {
+    greeting = 'Boa noite';
+}
+
+greetingElement.textContent = `${greeting}, tenha um ótimo trabalho!`;
+
+// Sistema Info Tooltip
+const systemIcon = document.getElementById('system-info-icon');
+const tooltip = document.getElementById('system-info-tooltip');
+let isTooltipVisible = false;
+
+if (systemIcon && tooltip) {
+    systemIcon.addEventListener('click', function(e) {
+        e.stopPropagation();
+        isTooltipVisible = !isTooltipVisible;
+        tooltip.classList.toggle('show', isTooltipVisible);
     });
 
-    
+    // Fechar tooltip ao clicar fora
+    document.addEventListener('click', function(e) {
+        if (!tooltip.contains(e.target) && !systemIcon.contains(e.target)) {
+            isTooltipVisible = false;
+            tooltip.classList.remove('show');
+        }
+    });
+
+    // Fechar tooltip ao pressionar ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && isTooltipVisible) {
+            isTooltipVisible = false;
+            tooltip.classList.remove('show');
+        }
+    });
+}
+
+// Contador de cliques para botões de atalho
+const buttons = document.querySelectorAll('.button-container button');
+
+buttons.forEach((btn, idx) => {
+    let btnId = btn.textContent.trim() + '_' + idx;
+    btnId = btnId.replace(/\s+/g, '_').replace(/[^\w\d_]/g, '');
+    const counterSpan = btn.querySelector('.click-counter');
+    if (!counterSpan) return;
+
+    let count = parseInt(localStorage.getItem('btnClick_' + btnId)) || 0;
+    counterSpan.textContent = count > 0 ? count : '';
+    counterSpan.style.display = count > 0 ? 'flex' : 'none';
+    btn.style.position = 'relative';
+    if (btn.lastElementChild !== counterSpan) {
+        btn.appendChild(counterSpan);
+    }
+    btn.addEventListener('click', function(e) {
+        count = parseInt(localStorage.getItem('btnClick_' + btnId)) || 0;
+        count++;
+        localStorage.setItem('btnClick_' + btnId, count);
+        counterSpan.textContent = count;
+        counterSpan.style.display = count > 0 ? 'flex' : 'none';
+        if (count > 3 && !isFavorite(btn)) {
+            toggleFavorite(btn);
+        }
+    });
 });
 
 // Funções para o modal de feriados

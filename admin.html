@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Administrativo - NAPJe</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuração do Supabase
+        window.SUPABASE_URL = 'https://qkdciqmomuczdfgdqbcx.supabase.co';
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZGNpcW1vbXVjemRmZ2RxYmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzAxMDMsImV4cCI6MjA2ODU0NjEwM30.YuxnYd0yjjbZmLbE9a40eE8PICD3Ae4CIBv_Qu_aMxs';
+    </script>
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --dark-color: #343a40;
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .admin-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .admin-card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+
+        .admin-card-body {
+            padding: 20px;
+        }
+
+        .user-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-paused {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-blocked {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .session-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .session-online {
+            background: #28a745;
+        }
+
+        .session-offline {
+            background: #6c757d;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin: 2px;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-block {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-unblock {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-pause {
+            background: var(--warning-color);
+            color: #212529;
+        }
+
+        .btn-logout {
+            background: var(--dark-color);
+            color: white;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stats-label {
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+
+        .table-responsive {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .nav-tabs .nav-link {
+            color: var(--primary-color);
+        }
+
+        .nav-tabs .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .alert-dismissible .btn-close {
+            padding: 0.75rem 1.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .admin-card-body {
+                padding: 15px;
+            }
+            
+            .table-responsive {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="admin-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h1 class="mb-0">
+                        <i class="bi bi-shield-check"></i>
+                        Painel Administrativo
+                    </h1>
+                    <p class="mb-0 opacity-75">Gerenciamento de Usuários - Sistema NAPJe</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <button class="btn btn-outline-light me-2" onclick="refreshData()">
+                        <i class="bi bi-arrow-clockwise"></i> Atualizar
+                    </button>
+                    <a href="index.html" class="btn btn-light">
+                        <i class="bi bi-house"></i> Voltar ao Sistema
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Alertas -->
+        <div id="alerts-container"></div>
+
+        <!-- Estatísticas -->
+        <div class="row mb-4">
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-card">
+                        <div class="stats-number" id="total-users">-</div>
+                        <div class="stats-label">Total de Usuários</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-card">
+                        <div class="stats-number text-success" id="online-users">-</div>
+                        <div class="stats-label">Usuários Online</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-card">
+                        <div class="stats-number text-warning" id="blocked-users">-</div>
+                        <div class="stats-label">Usuários Bloqueados</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-3">
+                <div class="admin-card">
+                    <div class="stats-card">
+                        <div class="stats-number text-info" id="active-sessions">-</div>
+                        <div class="stats-label">Sessões Ativas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs de Navegação -->
+        <ul class="nav nav-tabs mb-4" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">
+                    <i class="bi bi-people"></i> Usuários
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="sessions-tab" data-bs-toggle="tab" data-bs-target="#sessions" type="button" role="tab">
+                    <i class="bi bi-activity"></i> Sessões Ativas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="logs-tab" data-bs-toggle="tab" data-bs-target="#logs" type="button" role="tab">
+                    <i class="bi bi-journal-text"></i> Logs de Ações
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="shortcuts-tab" data-bs-toggle="tab" data-bs-target="#shortcuts" type="button" role="tab">
+                    <i class="bi bi-link-45deg"></i> Gerenciar Atalhos
+                </button>
+            </li>
+        </ul>
+
+        <!-- Conteúdo das Tabs -->
+        <div class="tab-content" id="adminTabsContent">
+            <!-- Tab Usuários -->
+            <div class="tab-pane fade show active" id="users" role="tabpanel">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <i class="bi bi-people"></i> Gerenciamento de Usuários
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>Status</th>
+                                        <th>Último Login</th>
+                                        <th>Sessões</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <tr>
+                                        <td colspan="5" class="loading">
+                                            <i class="bi bi-hourglass-split"></i> Carregando usuários...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Sessões -->
+            <div class="tab-pane fade" id="sessions" role="tabpanel">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <i class="bi bi-activity"></i> Sessões Ativas
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuário</th>
+                                        <th>IP</th>
+                                        <th>Dispositivo</th>
+                                        <th>Última Atividade</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sessions-table-body">
+                                    <tr>
+                                        <td colspan="5" class="loading">
+                                            <i class="bi bi-hourglass-split"></i> Carregando sessões...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Logs -->
+            <div class="tab-pane fade" id="logs" role="tabpanel">
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <i class="bi bi-journal-text"></i> Logs de Ações Administrativas
+                    </div>
+                    <div class="admin-card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Data/Hora</th>
+                                        <th>Administrador</th>
+                                        <th>Ação</th>
+                                        <th>Usuário Alvo</th>
+                                        <th>Motivo</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="logs-table-body">
+                                    <tr>
+                                        <td colspan="5" class="loading">
+                                            <i class="bi bi-hourglass-split"></i> Carregando logs...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab Atalhos -->
+            <div class="tab-pane fade" id="shortcuts" role="tabpanel">
+                <div class="row">
+                    <!-- Gerenciar Grupos -->
+                    <div class="col-md-6 mb-4">
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <i class="bi bi-collection"></i> Grupos de Atalhos
+                                <button class="btn btn-sm btn-success ms-auto" id="add-group-btn">
+                                    <i class="bi bi-plus"></i> Novo Grupo
+                                </button>
+                            </div>
+                            <div class="admin-card-body">
+                                <div id="groups-list">
+                                    <div class="loading text-center">
+                                        <i class="bi bi-hourglass-split"></i> Carregando grupos...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gerenciar Atalhos -->
+                    <div class="col-md-6 mb-4">
+                        <div class="admin-card">
+                            <div class="admin-card-header">
+                                <i class="bi bi-link-45deg"></i> Atalhos
+                                <button class="btn btn-sm btn-success ms-auto" id="add-shortcut-btn">
+                                    <i class="bi bi-plus"></i> Novo Atalho
+                                </button>
+                            </div>
+                            <div class="admin-card-body">
+                                <div class="mb-3">
+                                    <select class="form-select" id="group-filter">
+                                        <option value="">Todos os grupos</option>
+                                    </select>
+                                </div>
+                                <div id="shortcuts-list">
+                                    <div class="loading text-center">
+                                        <i class="bi bi-hourglass-split"></i> Carregando atalhos...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalTitle">Confirmar Ação</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="confirmModalBody">
+                    <!-- Conteúdo dinâmico -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Motivo -->
+    <div class="modal fade" id="reasonModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Informar Motivo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="reasonText" class="form-label">Motivo da ação:</label>
+                        <textarea class="form-control" id="reasonText" rows="3" placeholder="Descreva o motivo desta ação..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="reasonSubmitBtn">Confirmar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Criar/Editar Grupo -->
+    <div class="modal fade" id="groupModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="groupModalTitle">Novo Grupo</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="groupForm">
+                        <input type="hidden" id="groupId">
+                        <div class="mb-3">
+                            <label for="groupName" class="form-label">Nome do Grupo *</label>
+                            <input type="text" class="form-control" id="groupName" required placeholder="Ex: Consulta de Documentos">
+                        </div>
+                        <div class="mb-3">
+                            <label for="groupKey" class="form-label">Chave do Grupo *</label>
+                            <input type="text" class="form-control" id="groupKey" required placeholder="Ex: consulta-documentos">
+                            <div class="form-text">Identificador único (sem espaços, apenas letras, números e hífens)</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="groupDescription" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="groupDescription" rows="3" placeholder="Descrição opcional do grupo"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="groupOrder" class="form-label">Ordem de Exibição</label>
+                            <input type="number" class="form-control" id="groupOrder" value="0" min="0">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveGroupBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Criar/Editar Atalho -->
+    <div class="modal fade" id="shortcutModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="shortcutModalTitle">Novo Atalho</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="shortcutForm">
+                        <input type="hidden" id="shortcutId">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shortcutTitle" class="form-label">Título *</label>
+                                    <input type="text" class="form-control" id="shortcutTitle" required placeholder="Ex: Consulta CPF">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shortcutGroup" class="form-label">Grupo *</label>
+                                    <select class="form-select" id="shortcutGroup" required>
+                                        <option value="">Selecione um grupo</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="shortcutUrl" class="form-label">URL *</label>
+                            <input type="url" class="form-control" id="shortcutUrl" required placeholder="https://exemplo.com">
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shortcutIcon" class="form-label">Ícone (Bootstrap Icons)</label>
+                                    <input type="text" class="form-control" id="shortcutIcon" placeholder="bi bi-link-45deg">
+                                    <div class="form-text">Ex: bi bi-person, bi bi-building, bi bi-file-text</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="shortcutOrder" class="form-label">Ordem</label>
+                                    <input type="number" class="form-control" id="shortcutOrder" value="0" min="0">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="shortcutDescription" class="form-label">Descrição</label>
+                            <textarea class="form-control" id="shortcutDescription" rows="3" placeholder="Descrição opcional do atalho"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="shortcutActive" checked>
+                                <label class="form-check-label" for="shortcutActive">
+                                    Ativo
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" id="saveShortcutBtn">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Supabase Integration -->
+    <script src="supabase-integration.js"></script>
+    
+    <!-- Script da aplicação -->
+    <script src="admin.js"></script>
+</body>
+</html>

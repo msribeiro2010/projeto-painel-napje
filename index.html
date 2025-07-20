@@ -31,7 +31,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@400;500;600&family=Dancing+Script:wght@400;500;600&display=swap" rel="stylesheet">
   
     <!-- Scripts deferidos -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script>
+        // Configurações do Supabase - serão usadas quando a biblioteca carregar
+        window.SUPABASE_URL = 'https://qkdciqmomuczdfgdqbcx.supabase.co';
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZGNpcW1vbXVjemRmZ2RxYmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzAxMDMsImV4cCI6MjA2ODU0NjEwM30.YuxnYd0yjjbZmLbE9a40eE8PICD3Ae4CIBv_Qu_aMxs';
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+    <script src="supabase-integration.js" defer></script>
+    <script src="supabase-migration.js" defer></script>
+    <script src="user-profile.js" defer></script>
     <script src="notes.js" defer></script>
     <script src="aniversario-click.js" defer></script>
   </head>
@@ -58,10 +67,43 @@
                 <div class="header-content">
                     <div class="header-top-row">
                         <h1 class="app-title"><i class="bi bi-laptop" id="system-info-icon" style="color: #1e293b;"></i> Atalhos NAPJe</h1>
-                        <div class="dark-mode-toggle">
-                            <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" title="Alternar tema claro/escuro">
-                                <i class="bi bi-moon-fill" id="theme-icon"></i>
-                            </button>
+                        <div class="header-controls">
+                            <!-- Perfil do usuário (quando logado) -->
+                            <div class="user-profile" id="user-profile" style="display: none;">
+                                <div class="user-avatar">
+                                    <div class="avatar-circle" id="user-avatar">
+                                        <i class="bi bi-person-fill"></i>
+                                    </div>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name" id="user-name">Nome do Usuário</div>
+                                    <div class="user-role" id="user-role">Usuário</div>
+                                </div>
+                                <div class="user-actions">
+                                    <button class="btn btn-outline-light btn-sm me-1" id="admin-btn" title="Painel Administrativo" style="display: none;">
+                                        <i class="bi bi-shield-check"></i>
+                                    </button>
+                                    <button class="btn btn-outline-light btn-sm me-1" id="settings-btn" title="Configurações">
+                                        <i class="bi bi-gear"></i>
+                                    </button>
+                                    <button class="btn btn-outline-light btn-sm" id="logout-btn" title="Sair">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Botões de autenticação (quando não logado) -->
+                            <div class="auth-buttons" id="auth-buttons">
+                                <a href="auth.html" class="btn btn-outline-light btn-sm me-2" title="Login">
+                                    <i class="bi bi-person-circle"></i> Entrar
+                                </a>
+                            </div>
+                            
+                            <div class="dark-mode-toggle">
+                                <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema" title="Alternar tema claro/escuro">
+                                    <i class="bi bi-moon-fill" id="theme-icon"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
@@ -594,7 +636,6 @@
     <!-- Scripts -->    
      <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>    
      <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>    
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>    
      <script src="script.js"></script>    <script src="button-customization.js"></script>    
      <script src="recuperar-apps-fixos.js"></script>    <script src="header-clock.js"></script>    
      <script src="add-default-favoritos.js"></script>    <script src="card-customizer.js"></script>    

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚖️ NAPJe - Configurações</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        :root {
+            --primary-color: #0066cc;
+            --secondary-color: #f8f9fa;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --dark-color: #343a40;
+        }
+
+        body {
+            background: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: var(--primary-color) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .settings-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .card-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .card-header h5 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-floating {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+        }
+
+        .form-control.is-invalid {
+            border-color: var(--danger-color);
+        }
+
+        .form-control.is-valid {
+            border-color: var(--success-color);
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-danger {
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-weight: 600;
+        }
+
+        .alert {
+            border-radius: 10px;
+            border: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .password-strength {
+            margin-top: 10px;
+        }
+
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            background: #e9ecef;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+
+        .strength-fill {
+            height: 100%;
+            transition: all 0.3s ease;
+            width: 0%;
+        }
+
+        .strength-weak .strength-fill {
+            background: var(--danger-color);
+            width: 33%;
+        }
+
+        .strength-medium .strength-fill {
+            background: var(--warning-color);
+            width: 66%;
+        }
+
+        .strength-strong .strength-fill {
+            background: var(--success-color);
+            width: 100%;
+        }
+
+        .loading-spinner {
+            display: none;
+        }
+
+        .loading .loading-spinner {
+            display: inline-block;
+        }
+
+        .loading .btn-text {
+            display: none;
+        }
+
+        .user-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 2rem;
+        }
+
+        .first-login-warning {
+            background: linear-gradient(135deg, #ff9a56 0%, #ff6b6b 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .section-divider {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #e9ecef, transparent);
+            margin: 2rem 0;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                margin: 1rem auto;
+            }
+            
+            .card-body {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shield-check me-2"></i>
+                ⚖️ NAPJe
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="index.html">
+                    <i class="bi bi-house me-1"></i>
+                    Início
+                </a>
+                <a class="nav-link" href="#" onclick="logout()">
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    Sair
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <!-- First Login Warning -->
+        <div id="firstLoginWarning" class="first-login-warning" style="display: none;">
+            <h4><i class="bi bi-exclamation-triangle me-2"></i>Primeiro Acesso</h4>
+            <p class="mb-0">Por segurança, você deve alterar sua senha temporária antes de continuar usando o sistema.</p>
+        </div>
+
+        <!-- User Info -->
+        <div class="user-info fade-in">
+            <div class="user-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <h4 id="userName">Carregando...</h4>
+            <p id="userEmail" class="mb-0 opacity-75">Carregando...</p>
+        </div>
+
+        <!-- Profile Settings -->
+        <div class="settings-card fade-in">
+            <div class="card-header">
+                <h5><i class="bi bi-person-gear me-2"></i>Informações do Perfil</h5>
+            </div>
+            <div class="card-body">
+                <div id="profileAlert"></div>
+                <form id="profileForm">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="profileName" placeholder="Nome completo" required>
+                        <label for="profileName"><i class="bi bi-person me-2"></i>Nome completo</label>
+                        <div class="invalid-feedback">Por favor, insira seu nome completo.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="email" class="form-control" id="profileEmail" placeholder="nome@exemplo.com" required>
+                        <label for="profileEmail"><i class="bi bi-envelope me-2"></i>E-mail</label>
+                        <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <span class="btn-text">Atualizar Perfil</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Password Settings -->
+        <div class="settings-card fade-in">
+            <div class="card-header">
+                <h5><i class="bi bi-shield-lock me-2"></i>Alterar Senha</h5>
+            </div>
+            <div class="card-body">
+                <div id="passwordAlert"></div>
+                <form id="passwordForm">
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="currentPassword" placeholder="Senha atual" required>
+                        <label for="currentPassword"><i class="bi bi-lock me-2"></i>Senha atual</label>
+                        <div class="invalid-feedback">Por favor, insira sua senha atual.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="newPassword" placeholder="Nova senha" required>
+                        <label for="newPassword"><i class="bi bi-lock-fill me-2"></i>Nova senha</label>
+                        <div class="invalid-feedback">A senha deve ter pelo menos 8 caracteres.</div>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <small class="strength-text text-muted">Digite uma senha para ver sua força</small>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control" id="confirmNewPassword" placeholder="Confirmar nova senha" required>
+                        <label for="confirmNewPassword"><i class="bi bi-lock-fill me-2"></i>Confirmar nova senha</label>
+                        <div class="invalid-feedback">As senhas não coincidem.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <span class="btn-text">Alterar Senha</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Preferences Settings -->
+        <div class="settings-card fade-in">
+            <div class="card-header">
+                <h5><i class="bi bi-gear me-2"></i>Preferências</h5>
+            </div>
+            <div class="card-body">
+                <div id="preferencesAlert"></div>
+                <form id="preferencesForm">
+                    <div class="mb-3">
+                        <label class="form-label"><i class="bi bi-palette me-2"></i>Tema</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="theme" id="themeLight" value="light">
+                            <label class="form-check-label" for="themeLight">
+                                <i class="bi bi-sun me-2"></i>Claro
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="theme" id="themeDark" value="dark">
+                            <label class="form-check-label" for="themeDark">
+                                <i class="bi bi-moon me-2"></i>Escuro
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="theme" id="themeAuto" value="auto" checked>
+                            <label class="form-check-label" for="themeAuto">
+                                <i class="bi bi-circle-half me-2"></i>Automático
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">
+                                <i class="bi bi-envelope me-2"></i>Receber notificações por e-mail
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="birthdayNotifications" checked>
+                            <label class="form-check-label" for="birthdayNotifications">
+                                <i class="bi bi-calendar-heart me-2"></i>Notificações de aniversários
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <span class="btn-text">Salvar Preferências</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Danger Zone -->
+        <div class="settings-card fade-in">
+            <div class="card-header bg-danger">
+                <h5><i class="bi bi-exclamation-triangle me-2"></i>Zona de Perigo</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Excluir Conta</h6>
+                        <p class="text-muted mb-0">Esta ação não pode ser desfeita. Todos os seus dados serão permanentemente removidos.</p>
+                    </div>
+                    <button type="button" class="btn btn-outline-danger" onclick="confirmDeleteAccount()">
+                        <i class="bi bi-trash me-2"></i>Excluir Conta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal fade" id="deleteAccountModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Confirmar Exclusão
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Tem certeza de que deseja excluir sua conta? Esta ação é <strong>irreversível</strong>.</p>
+                    <p>Para confirmar, digite <strong>EXCLUIR</strong> no campo abaixo:</p>
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="deleteConfirmation" placeholder="EXCLUIR">
+                        <label for="deleteConfirmation">Digite EXCLUIR para confirmar</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn" disabled onclick="deleteAccount()">
+                        <span class="loading-spinner spinner-border spinner-border-sm me-2"></span>
+                        <span class="btn-text">Excluir Conta</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Settings Script -->
+    <script src="settings.js"></script>
+</body>
+</html>
