@@ -260,7 +260,7 @@ app.get('/api/auth/profile', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (profileError) {
@@ -296,12 +296,11 @@ app.put('/api/auth/profile', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .update({ 
-        name,
-        email,
+        full_name: name,
         first_login: false,
         last_login: new Date().toISOString()
       })
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .select()
       .single();
 
@@ -361,7 +360,7 @@ app.put('/api/auth/change-password', async (req, res) => {
     await supabase
       .from('user_profiles')
       .update({ first_login: false })
-      .eq('id', user.id);
+      .eq('user_id', user.id);
 
     res.json({ message: 'Senha alterada com sucesso' });
   } catch (error) {
@@ -388,7 +387,7 @@ app.get('/api/auth/first-login', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('first_login')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (profileError) {
@@ -420,8 +419,8 @@ app.get('/api/supabase/user-settings', async (req, res) => {
     
     // Criar cliente temporário com o token do usuário
     const userSupabase = createClient(
-      'https://seoxtbjhpysgzbrjymjg.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlb3h0YmpocHlzZ3picmp5bWpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTg3NDAsImV4cCI6MjA2ODQzNDc0MH0.qfIFxK1U2L9IKwJdtLBxqbguLZ6m90OqrVX28T_NZ7U',
+      'https://qkdciqmomuczdfgdqbcx.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZGNpcW1vbXVjemRmZ2RxYmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzAxMDMsImV4cCI6MjA2ODU0NjEwM30.YuxnYd0yjjbZmLbE9a40eE8PICD3Ae4CIBv_Qu_aMxs',
       {
         global: {
           headers: {
@@ -463,8 +462,8 @@ app.post('/api/supabase/user-settings', async (req, res) => {
     
     // Criar cliente temporário com o token do usuário
     const userSupabase = createClient(
-      'https://seoxtbjhpysgzbrjymjg.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNlb3h0YmpocHlzZ3picmp5bWpnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI4NTg3NDAsImV4cCI6MjA2ODQzNDc0MH0.qfIFxK1U2L9IKwJdtLBxqbguLZ6m90OqrVX28T_NZ7U',
+      'https://qkdciqmomuczdfgdqbcx.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFrZGNpcW1vbXVjemRmZ2RxYmN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5NzAxMDMsImV4cCI6MjA2ODU0NjEwM30.YuxnYd0yjjbZmLbE9a40eE8PICD3Ae4CIBv_Qu_aMxs',
       {
         global: {
           headers: {

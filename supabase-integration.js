@@ -35,11 +35,18 @@ class SupabaseManager {
                     window.SUPABASE_URL,
                     window.SUPABASE_ANON_KEY
                 );
-                console.log('Supabase inicializado com sucesso!');
+                console.log('✅ Supabase cliente inicializado com sucesso!');
+                console.log('🔗 URL:', window.SUPABASE_URL);
             } catch (error) {
-                console.error('Erro ao inicializar Supabase:', error);
+                console.error('❌ Erro ao inicializar Supabase:', error);
             }
         } else {
+            // Verifica quais variáveis estão faltando
+            console.log('⏳ Aguardando Supabase...', {
+                supabase: !!window.supabase,
+                url: !!window.SUPABASE_URL,
+                key: !!window.SUPABASE_ANON_KEY
+            });
             // Tenta novamente após um pequeno delay
             setTimeout(() => this.initializeSupabase(), 100);
         }
