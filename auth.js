@@ -409,7 +409,7 @@ class AuthManager {
     async createAdminUserIfNeeded() {
         try {
             const supabase = getSupabaseClient();
-            
+
             if (!supabase) {
                 console.log('Cliente Supabase não disponível para criar admin');
                 return;
@@ -450,7 +450,7 @@ class AuthManager {
                     // Se o usuário já existe, apenas criar o perfil
                     if (error.message.includes('already registered')) {
                         console.log('Usuário já existe, verificando se precisa criar perfil...');
-                        
+
                         // Buscar o usuário pelo email
                         const { data: users, error: listError } = await supabase.auth.admin.listUsers();
                         if (!listError && users && users.users) {
