@@ -103,6 +103,15 @@ class AuthManager {
             console.log('🎯 Configurando event listeners...');
             this.setupEventListeners();
 
+            console.log('👤 Verificando usuário administrador...');
+            // Tentar criar usuário admin se necessário (sem await para não bloquear)
+            this.createAdminUserIfNeeded().catch(error => {
+                console.log('ℹ️ Nota: Não foi possível verificar/criar usuário admin:', error.message);
+            });
+
+            console.log('🔍 Verificando fluxo de reset de senha...');
+            this.checkResetPasswordFlow();
+
             console.log('✅ AuthManager inicializado com sucesso!');
         } catch (error) {
             console.error('❌ Erro ao inicializar AuthManager:', error);
@@ -400,15 +409,29 @@ class AuthManager {
     async createAdminUserIfNeeded() {
         try {
             const supabase = getSupabaseClient();
+            
+            if (!supabase) {
+                console.log('Cliente Supabase não disponível para criar admin');
+                return;
+            }
+
             // Verificar se já existe um perfil admin na tabela user_profiles
-            const { data: existingProfile } = await supabase
+            const { data: existingProfile, error: queryError } = await supabase
                 .from('user_profiles')
                 .select('*')
                 .eq('role', 'admin')
-                .limit(1)
-                .single();
+                .limit(1);
 
-            if (!existingProfile) {
+            if (queryError) {
+                console.log('Erro ao verificar perfil admin existente:', queryError.message);
+                // Se a tabela não existe, isso é esperado na primeira execução
+                if (queryError.message.includes('relation "user_profiles" does not exist')) {
+                    console.log('Tabela user_profiles não existe ainda. Execute o script SQL primeiro.');
+                    return;
+                }
+            }
+
+            if (!existingProfile || existingProfile.length === 0) {
                 console.log('Criando usuário administrador...');
                 // Criar usuário administrador
                 const { data, error } = await supabase.auth.signUp({
@@ -426,15 +449,15 @@ class AuthManager {
                     console.log('Erro ao criar usuário admin:', error.message);
                     // Se o usuário já existe, apenas criar o perfil
                     if (error.message.includes('already registered')) {
-                        console.log('Usuário já existe, criando apenas o perfil admin...');
-                        // Tentar fazer login para obter o ID do usuário
-                        const { data: loginData } = await supabase.auth.signInWithPassword({
-                            email: 'msribeiro@trt15.jus.br',
-                            password: 'TrT15@2025tmp'
-                        });
-
-                        if (loginData.user) {
-                            await this.createAdminProfile(loginData.user.id);
+                        console.log('Usuário já existe, verificando se precisa criar perfil...');
+                        
+                        // Buscar o usuário pelo email
+                        const { data: users, error: listError } = await supabase.auth.admin.listUsers();
+                        if (!listError && users && users.users) {
+                            const adminUser = users.users.find(user => user.email === 'msribeiro@trt15.jus.br');
+                            if (adminUser) {
+                                await this.createAdminProfile(adminUser.id);
+                            }
                         }
                     }
                 } else if (data.user) {

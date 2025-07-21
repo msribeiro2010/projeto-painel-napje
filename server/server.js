@@ -260,7 +260,7 @@ app.get('/api/auth/profile', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('*')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (profileError) {
@@ -296,12 +296,11 @@ app.put('/api/auth/profile', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .update({ 
-        name,
-        email,
+        full_name: name,
         first_login: false,
         last_login: new Date().toISOString()
       })
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .select()
       .single();
 
@@ -361,7 +360,7 @@ app.put('/api/auth/change-password', async (req, res) => {
     await supabase
       .from('user_profiles')
       .update({ first_login: false })
-      .eq('id', user.id);
+      .eq('user_id', user.id);
 
     res.json({ message: 'Senha alterada com sucesso' });
   } catch (error) {
@@ -388,7 +387,7 @@ app.get('/api/auth/first-login', async (req, res) => {
     const { data: profile, error: profileError } = await supabase
       .from('user_profiles')
       .select('first_login')
-      .eq('id', user.id)
+      .eq('user_id', user.id)
       .single();
 
     if (profileError) {
